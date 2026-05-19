@@ -1,7 +1,7 @@
 'use client';
 
 import { useSipekanStore } from '@/store/sipekan-store';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Header } from '@/components/sipekan/Header';
 import { Footer } from '@/components/sipekan/Footer';
 import { DashboardPage } from '@/components/sipekan/DashboardPage';
@@ -16,12 +16,17 @@ import { DisplayAntrianPage } from '@/components/sipekan/DisplayAntrianPage';
 import { RekapitulasiPage } from '@/components/sipekan/RekapitulasiPage';
 
 export default function Home() {
-  const { currentPage } = useSipekanStore();
-  const [showDisplay, setShowDisplay] = useState(false);
+  const { currentPage, officer, setCurrentPage } = useSipekanStore();
+
+  // Redirect to login if trying to access display-antrian without auth
+  const wantsDisplay = currentPage === 'display-antrian';
+  const showDisplay = wantsDisplay && !!officer;
 
   useEffect(() => {
-    setShowDisplay(currentPage === 'display-antrian');
-  }, [currentPage]);
+    if (wantsDisplay && !officer) {
+      setCurrentPage('login-petugas');
+    }
+  }, [wantsDisplay, officer, setCurrentPage]);
 
   useEffect(() => {
     const interval = setInterval(() => {

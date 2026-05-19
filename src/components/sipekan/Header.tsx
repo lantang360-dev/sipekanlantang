@@ -12,7 +12,6 @@ const NAV_ITEMS: { label: string; page: PageType; auth?: boolean }[] = [
   { label: 'Pendaftaran', page: 'pendaftaran' },
   { label: 'Informasi', page: 'informasi' },
   { label: 'Cek Antrian', page: 'status-antrian' },
-  { label: 'Display Antrian', page: 'display-antrian' },
 ];
 
 export function Header() {

@@ -98,12 +98,14 @@ export function DisplayAntrianPage() {
   const [showManualInput, setShowManualInput] = useState<string | null>(null);
   const [callFeedback, setCallFeedback] = useState<CallFeedback | null>(null);
   const [videoMuted, setVideoMuted] = useState(true);
+  const [showSoundPrompt, setShowSoundPrompt] = useState(true);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const speechInitializedRef = useRef(false);
   const prevCalledRef = useRef<string | null>(null);
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const ytPlayerRef = useRef<HTMLIFrameElement | null>(null);
+  const videoMutedRef = useRef(true);
 
   // Initialize speech synthesis on first user interaction
   useEffect(() => {
@@ -149,12 +151,43 @@ export function DisplayAntrianPage() {
   const toggleVideoSound = useCallback(() => {
     setVideoMuted(prev => {
       const newMuted = !prev;
+      videoMutedRef.current = newMuted;
       // Update HTML5 video element directly
       if (videoRef.current) {
         videoRef.current.muted = newMuted;
       }
+      // Update YouTube iframe via postMessage API
+      if (ytPlayerRef.current) {
+        try {
+          ytPlayerRef.current.contentWindow?.postMessage(
+            JSON.stringify({ event: 'command', func: newMuted ? 'mute' : 'unMute' }),
+            '*'
+          );
+        } catch {}
+      }
       return newMuted;
     });
+  }, []);
+
+  // Enable video sound (called from the prompt overlay)
+  const enableVideoSound = useCallback(() => {
+    setVideoMuted(false);
+    videoMutedRef.current = false;
+    setShowSoundPrompt(false);
+    // Update HTML5 video element
+    if (videoRef.current) {
+      videoRef.current.muted = false;
+      videoRef.current.play?.().catch(() => {});
+    }
+    // Unmute YouTube via postMessage
+    if (ytPlayerRef.current) {
+      try {
+        ytPlayerRef.current.contentWindow?.postMessage(
+          JSON.stringify({ event: 'command', func: 'unMute' }),
+          '*'
+        );
+      } catch {}
+    }
   }, []);
 
   // Play chime + speak queue number (temporarily mutes video)
@@ -162,9 +195,19 @@ export function DisplayAntrianPage() {
     if (!soundOn) return;
 
     // Temporarily mute video during announcement
-    const wasVideoMuted = videoMuted;
+    const wasVideoMuted = videoMutedRef.current;
     setVideoMuted(true);
+    videoMutedRef.current = true;
     if (videoRef.current) videoRef.current.muted = true;
+    // Mute YouTube via postMessage
+    if (ytPlayerRef.current) {
+      try {
+        ytPlayerRef.current.contentWindow?.postMessage(
+          JSON.stringify({ event: 'command', func: 'mute' }),
+          '*'
+        );
+      } catch {}
+    }
 
     // Play chime sound
     audioCtxRef.current = playChimeSound(audioCtxRef.current) || audioCtxRef.current;
@@ -191,28 +234,41 @@ export function DisplayAntrianPage() {
         const idVoice = voices.find(v => v.lang.startsWith('id'));
         if (idVoice) utterance.voice = idVoice;
 
-        utterance.onend = () => {
-          // Restore video sound after announcement finishes
+        const restoreVideoSound = () => {
           if (!wasVideoMuted) {
             setVideoMuted(false);
+            videoMutedRef.current = false;
             if (videoRef.current) videoRef.current.muted = false;
+            // Unmute YouTube via postMessage
+            if (ytPlayerRef.current) {
+              try {
+                ytPlayerRef.current.contentWindow?.postMessage(
+                  JSON.stringify({ event: 'command', func: 'unMute' }),
+                  '*'
+                );
+              } catch {}
+            }
           }
         };
-        utterance.onerror = () => {
-          // Restore video sound on error too
-          if (!wasVideoMuted) {
-            setVideoMuted(false);
-            if (videoRef.current) videoRef.current.muted = false;
-          }
-        };
+        utterance.onend = restoreVideoSound;
+        utterance.onerror = restoreVideoSound;
 
         window.speechSynthesis.speak(utterance);
 
         // Fallback: restore video sound after 10 seconds max
         setTimeout(() => {
-          if (!wasVideoMuted) {
+          if (!wasVideoMuted && videoMutedRef.current) {
             setVideoMuted(false);
+            videoMutedRef.current = false;
             if (videoRef.current) videoRef.current.muted = false;
+            if (ytPlayerRef.current) {
+              try {
+                ytPlayerRef.current.contentWindow?.postMessage(
+                  JSON.stringify({ event: 'command', func: 'unMute' }),
+                  '*'
+                );
+              } catch {}
+            }
           }
         }, 10000);
       } catch (e) {
@@ -220,11 +276,20 @@ export function DisplayAntrianPage() {
         // Restore video sound on error
         if (!wasVideoMuted) {
           setVideoMuted(false);
+          videoMutedRef.current = false;
           if (videoRef.current) videoRef.current.muted = false;
+          if (ytPlayerRef.current) {
+            try {
+              ytPlayerRef.current.contentWindow?.postMessage(
+                JSON.stringify({ event: 'command', func: 'unMute' }),
+                '*'
+              );
+            } catch {}
+          }
         }
       }
     }, 1200);
-  }, [soundOn, videoMuted]);
+  }, [soundOn]);
 
   // Poll display data
   const fetchData = useCallback(async () => {
@@ -468,9 +533,9 @@ export function DisplayAntrianPage() {
               title="Pengaturan Video">
               <Settings className="w-4 h-4" />
             </button>
-            <button onClick={() => setCurrentPage('dashboard')}
+            <button onClick={() => setCurrentPage('petugas-dashboard')}
               className="w-9 h-9 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-white/50 hover:text-red-400 hover:bg-red-400/10 transition"
-              title="Kembali ke Beranda">
+              title="Kembali ke Panel Petugas">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -541,22 +606,38 @@ export function DisplayAntrianPage() {
               </button>
             </div>
           </div>
+          {/* Sound Enable Prompt Overlay */}
+          {showSoundPrompt && mediaItems.length > 0 && (
+            <div
+              className="absolute inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center cursor-pointer"
+              onClick={enableVideoSound}
+            >
+              <div className="text-center">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-amber-400/15 border-2 border-amber-400/40 flex items-center justify-center animate-pulse">
+                  <Volume2 className="w-10 h-10 text-amber-400" />
+                </div>
+                <div className="text-xl font-bold text-white mb-2">Klik untuk Mengaktifkan Suara</div>
+                <div className="text-sm text-white/50">Klik di mana saja untuk memutar suara video</div>
+              </div>
+            </div>
+          )}
+
           <div className="flex-1 relative bg-black">
             {mediaItems.length > 0 && mediaItems[currentMediaIdx] ? (
               mediaItems[currentMediaIdx].type === 'youtube' ? (
                 <iframe
-                  key={`yt-${mediaItems[currentMediaIdx].id}-${videoMuted}`}
+                  key={`yt-${mediaItems[currentMediaIdx].id}`}
                   ref={ytPlayerRef}
-                  src={`https://www.youtube.com/embed/${mediaItems[currentMediaIdx].mediaId}?autoplay=1&mute=${videoMuted ? 1 : 0}&loop=1&controls=0&playlist=${mediaItems[currentMediaIdx].mediaId}`}
+                  src={`https://www.youtube.com/embed/${mediaItems[currentMediaIdx].mediaId}?autoplay=1&mute=1&loop=1&controls=0&playlist=${mediaItems[currentMediaIdx].mediaId}&enablejsapi=1`}
                   className="absolute inset-0 w-full h-full"
                   allow="autoplay; encrypted-media"
                 />
               ) : mediaItems[currentMediaIdx].type === 'gdrive' ? (
                 <iframe
-                  key={`gd-${mediaItems[currentMediaIdx].id}-${videoMuted}`}
+                  key={`gd-${mediaItems[currentMediaIdx].id}`}
                   src={`https://drive.google.com/file/d/${mediaItems[currentMediaIdx].mediaId}/preview`}
                   className="absolute inset-0 w-full h-full"
-                  allow="autoplay"
+                  allow="autoplay; encrypted-media"
                 />
               ) : mediaItems[currentMediaIdx].type === 'url' ? (
                 <video
@@ -566,6 +647,7 @@ export function DisplayAntrianPage() {
                   autoPlay
                   muted={videoMuted}
                   loop
+                  playsInline
                   controls={false}
                 />
               ) : (
