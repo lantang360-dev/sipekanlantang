@@ -40,6 +40,11 @@ async function main() {
     update: {},
     create: { name: 'Penitipan Barang', prefix: 'P', description: 'Layanan penitipan barang untuk warga binaan', estimatedMin: 15, order: 2 },
   });
+  const s3 = await prisma.service.upsert({
+    where: { prefix: 'A' },
+    update: { name: 'Daftar Online', description: 'Antrian khusus pendaftar online yang sudah diverifikasi', estimatedMin: 10 },
+    create: { name: 'Daftar Online', prefix: 'A', description: 'Antrian khusus pendaftar online yang sudah diverifikasi', estimatedMin: 10, order: 3 },
+  });
   // Seed counters
   console.log('  Creating counters...');
   const existingCounters = await prisma.counter.count();
@@ -49,6 +54,7 @@ async function main() {
         { name: 'Loket 1', serviceId: s1.id, status: 'aktif', currentNum: '', order: 1 },
         { name: 'Loket 2', serviceId: s1.id, status: 'aktif', currentNum: '', order: 2 },
         { name: 'Loket 3', serviceId: s2.id, status: 'aktif', currentNum: '', order: 3 },
+        { name: 'Loket 4', serviceId: s3.id, status: 'aktif', currentNum: '', order: 4 },
       ],
     });
   }

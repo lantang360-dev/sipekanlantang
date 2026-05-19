@@ -49,15 +49,17 @@ export async function GET(request: Request) {
     const services = await Promise.all([
       db.service.upsert({ where: { prefix: 'B' }, update: {}, create: { name: 'Besukan Tatap Muka', prefix: 'B', description: 'Layanan kunjungan tatap muka dengan warga binaan', estimatedMin: 30, order: 1 } }),
       db.service.upsert({ where: { prefix: 'P' }, update: {}, create: { name: 'Penitipan Barang', prefix: 'P', description: 'Layanan penitipan barang untuk warga binaan', estimatedMin: 15, order: 2 } }),
+      db.service.upsert({ where: { prefix: 'A' }, update: { name: 'Daftar Online', description: 'Antrian khusus pendaftar online yang sudah diverifikasi', estimatedMin: 10 }, create: { name: 'Daftar Online', prefix: 'A', description: 'Antrian khusus pendaftar online yang sudah diverifikasi', estimatedMin: 10, order: 3 } }),
     ]);
 
-    // Seed counters — exactly 3 loket
+    // Seed counters — 4 loket
     const existingCounters = await db.counter.count();
     if (existingCounters === 0) {
       await db.counter.createMany({ data: [
         { name: 'Loket 1', serviceId: services[0].id, status: 'aktif', currentNum: '', order: 1 },
         { name: 'Loket 2', serviceId: services[0].id, status: 'aktif', currentNum: '', order: 2 },
         { name: 'Loket 3', serviceId: services[1].id, status: 'aktif', currentNum: '', order: 3 },
+        { name: 'Loket 4', serviceId: services[2].id, status: 'aktif', currentNum: '', order: 4 },
       ]});
     }
 
