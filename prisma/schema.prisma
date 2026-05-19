@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Officer {
+  id           String        @id @default(cuid())
+  username     String        @unique
+  password     String
+  name         String
+  role         String        @default("petugas") // petugas, admin
+  registrations Registration[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
+}
+
+model Service {
+  id           String       @id @default(cuid())
+  name         String
+  prefix       String       @unique // B, P, A
+  description  String
+  estimatedMin Int          @default(15)
+  isActive     Boolean      @default(true)
+  order        Int          @default(0)
+  counters     Counter[]
+  queues       Queue[]
+  registrations Registration[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+}
+
+model Counter {
+  id          String  @id @default(cuid())
+  name        String // Loket 1, Loket 2, etc.
+  serviceId   String
+  service     Service @relation(fields: [serviceId], references: [id])
+  status      String  @default("aktif") // aktif, istirahat, nonaktif
+  currentNum  String  @default("") // currently serving number
+  order       Int     @default(0)
+  queues      Queue[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model Queue {
+  id           String    @id @default(cuid())
+  number       String    // B-0001, P-0001, etc.
+  serviceId    String
+  service      Service   @relation(fields: [serviceId], references: [id])
+  counterId    String?
+  counter      Counter?  @relation(fields: [counterId], references: [id])
+  status       String    @default("menunggu") // menunggu, dipanggil, dilayani, selesai, dibatalkan
+  visitorName  String?
+  visitorNik   String?
+  visitorPhone String?
+  date         String    // YYYY-MM-DD
+  calledAt     DateTime?
+  servedAt     DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now()) @updatedAt
+  registration Registration?
+}
+
+model Registration {
+  id                String    @id @default(cuid())
+  code              String    @unique // REG-YYYYMMDD-XXXX
+  visitorName       String
+  visitorNik        String
+  visitorPhone      String?
+  visitorAddress    String?
+  visitorRelation   String    // hubungan dengan warga binaan
+  inmateName        String
+  inmateNumber      String?   // nomor register warga binaan
+  visitDate         String    // tanggal kunjungan
+  visitTime         String?   // waktu kunjungan
+  serviceId         String
+  service           Service   @relation(fields: [serviceId], references: [id])
+  visitorCount      Int       @default(1) // jumlah pengunjung
+  documentKtp       Boolean   @default(false)
+  documentSurat     Boolean   @default(false)
+  documentOther     String?
+  status            String    @default("menunggu") // menunggu, diverifikasi, ditolak
+  verifiedBy        String?
+  officer           Officer?  @relation(fields: [verifiedBy], references: [id])
+  verifyNote        String?
+  queueId           String?   @unique // linked queue number after verification
+  queue             Queue?    @relation(fields: [queueId], references: [id])
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now()) @updatedAt
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model MediaItem {
+  id        String   @id @default(cuid())
+  type      String   @default("youtube") // youtube, gdrive
+  mediaId   String   // YouTube video ID or Google Drive file ID
+  title     String
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
