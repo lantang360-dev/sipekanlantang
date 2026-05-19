@@ -3,7 +3,7 @@
 import { useSipekanStore, PageType } from '@/store/sipekan-store';
 import { useEffect, useState } from 'react';
 import {
-  Shield, FileText, Info, Clock, Lock, LogIn
+  Shield, FileText, Info, Clock, Lock, LogIn, Monitor, BarChart3, Users
 } from 'lucide-react';
 
 const HOURS = [
@@ -68,6 +68,45 @@ export function DashboardPage() {
           Lembaga Pemasyarakatan Kelas IIA Bontang
         </p>
       </section>
+
+      {/* PETUGAS QUICK ACCESS — only when logged in */}
+      {officer && (
+        <div className="relative z-[10] px-5 md:px-6 mb-6">
+          <div className="max-w-[1280px] mx-auto">
+            <div className="bg-gradient-to-r from-amber-400/20 via-amber-400/10 to-amber-400/20 backdrop-blur-md rounded-2xl border-2 border-amber-400/40 p-4 md:p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-[#0f1d3e]" />
+                </div>
+                <span className="text-amber-400 font-bold text-sm">Panel Petugas — {officer.name}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  onClick={() => navigate('display-antrian')}
+                  className="bg-amber-400 hover:bg-amber-500 text-[#0f1d3e] rounded-xl px-4 py-3 font-bold text-sm flex flex-col items-center gap-1.5 transition-all hover:scale-[1.03] shadow-lg shadow-amber-400/20"
+                >
+                  <Monitor className="w-6 h-6" />
+                  Display Antrian
+                </button>
+                <button
+                  onClick={() => navigate('petugas-dashboard')}
+                  className="bg-white/15 hover:bg-white/25 text-white rounded-xl px-4 py-3 font-bold text-sm flex flex-col items-center gap-1.5 transition-all border border-white/20"
+                >
+                  <Users className="w-6 h-6" />
+                  Pendaftaran
+                </button>
+                <button
+                  onClick={() => navigate('rekapitulasi')}
+                  className="bg-white/15 hover:bg-white/25 text-white rounded-xl px-4 py-3 font-bold text-sm flex flex-col items-center gap-1.5 transition-all border border-white/20"
+                >
+                  <BarChart3 className="w-6 h-6" />
+                  Rekapitulasi
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 4 Cards in a Row */}
       <div className="relative z-[10] px-5 pb-10 md:px-6 md:pb-12">

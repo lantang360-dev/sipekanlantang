@@ -15,6 +15,8 @@ import { PetugasDetailPage } from '@/components/sipekan/PetugasDetailPage';
 import { DisplayAntrianPage } from '@/components/sipekan/DisplayAntrianPage';
 import { RekapitulasiPage } from '@/components/sipekan/RekapitulasiPage';
 
+const DARK_BG_PAGES = ['dashboard', 'petugas-dashboard', 'login-petugas', 'petugas-detail', 'rekapitulasi'];
+
 export default function Home() {
   const { currentPage, officer, setCurrentPage } = useSipekanStore();
 
@@ -54,14 +56,13 @@ export default function Home() {
     return <DisplayAntrianPage />;
   }
 
-  // Dashboard has its own background (dark + image), other pages are white
-  const isDashboard = currentPage === 'dashboard';
+  const isDarkBg = DARK_BG_PAGES.includes(currentPage);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: isDashboard ? '#0f1d3e' : '#f8f9fc' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: isDarkBg ? '#0f1d3e' : '#f8f9fc' }}>
       <Header />
-      <main className={`flex-1 relative z-[2] ${isDashboard ? '' : 'p-4 md:p-6'}`}>
-        <div className={isDashboard ? '' : 'max-w-[1280px] mx-auto'}>
+      <main className={`flex-1 relative z-[2] ${isDarkBg ? '' : 'p-4 md:p-6'}`}>
+        <div className={isDarkBg ? '' : 'max-w-[1280px] mx-auto'}>
           {renderPage()}
         </div>
       </main>
