@@ -3,7 +3,7 @@
 import { useSipekanStore, PageType } from '@/store/sipekan-store';
 import { useEffect, useState } from 'react';
 import {
-  Shield, FileText, Info, Clock, Lock, LogIn, Monitor, BarChart3, Users
+  Shield, FileText, Info, Clock, Lock, LogIn, Monitor, BarChart3, Users, Settings
 } from 'lucide-react';
 
 const HOURS = [
@@ -107,6 +107,15 @@ export function DashboardPage() {
                   Rekapitulasi
                 </button>
               </div>
+              {officer.role === 'admin' && (
+                <button
+                  onClick={() => navigate('settings')}
+                  className="mt-3 w-full bg-white/10 hover:bg-white/20 text-white rounded-xl px-4 py-2.5 font-bold text-sm flex items-center justify-center gap-2 transition-all border border-white/15"
+                >
+                  <Settings className="w-4 h-4" />
+                  Pengaturan WhatsApp
+                </button>
+              )}
             </div>
           </div>
         </div>

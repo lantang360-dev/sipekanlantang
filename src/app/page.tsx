@@ -17,8 +17,9 @@ const PetugasDashboardPage = dynamic(() => import('@/components/sipekan/PetugasD
 const PetugasDetailPage = dynamic(() => import('@/components/sipekan/PetugasDetailPage').then(m => ({ default: m.PetugasDetailPage })), { ssr: false });
 const RekapitulasiPage = dynamic(() => import('@/components/sipekan/RekapitulasiPage').then(m => ({ default: m.RekapitulasiPage })), { ssr: false });
 const DisplayAntrianPage = dynamic(() => import('@/components/sipekan/DisplayAntrianPage').then(m => ({ default: m.DisplayAntrianPage })), { ssr: false });
+const SettingsPage = dynamic(() => import('@/components/sipekan/SettingsPage').then(m => ({ default: m.SettingsPage })), { ssr: false });
 
-const DARK_BG_PAGES = ['dashboard', 'pendaftaran', 'petugas-dashboard', 'login-petugas', 'petugas-detail', 'rekapitulasi', 'antrian', 'status-antrian', 'informasi'];
+const DARK_BG_PAGES = ['dashboard', 'pendaftaran', 'petugas-dashboard', 'login-petugas', 'petugas-detail', 'rekapitulasi', 'antrian', 'status-antrian', 'informasi', 'settings'];
 
 export default function Home() {
   const { currentPage, officer, setCurrentPage } = useSipekanStore();
@@ -51,6 +52,7 @@ export default function Home() {
       case 'petugas-dashboard': return <PetugasDashboardPage />;
       case 'petugas-detail': return <PetugasDetailPage />;
       case 'rekapitulasi': return <RekapitulasiPage />;
+      case 'settings': return <SettingsPage />;
       default: return <DashboardPage />;
     }
   }, [currentPage]);

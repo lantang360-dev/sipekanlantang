@@ -69,10 +69,10 @@ export async function POST(request: Request) {
 
     const today = getTodayStr();
     const todayCount = await db.registration.count({
-      where: { code: { startsWith: `REG-${today}` } },
+      where: { code: { startsWith: 'P-' } },
     });
 
-    const code = `REG-${today}-${String(todayCount + 1).padStart(4, '0')}`;
+    const code = `P-${String(todayCount + 1).padStart(4, '0')}`;
 
     const registration = await db.registration.create({
       data: {

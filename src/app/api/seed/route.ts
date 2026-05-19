@@ -71,6 +71,8 @@ export async function GET(request: Request) {
       { key: 'visit_days', value: 'Senin,Jumat' },
       { key: 'institution_name', value: 'Lapas Kelas IIA Bontang' },
       { key: 'marquee_text', value: 'Selamat datang di Pelayanan Besukan Lapas Kelas IIA Bontang. Pastikan Anda membawa KTP asli yang masih berlaku. Maksimal 3 orang pengunjung per warga binaan.' },
+      { key: 'wa_api_key', value: '' },
+      { key: 'wa_device_url', value: 'https://api.fonnte.com/send' },
     ];
     for (const s of settings) {
       await db.setting.upsert({ where: { key: s.key }, update: { value: s.value }, create: s });

@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
 import { NextResponse } from 'next/server';
+import { sendWhatsAppNotification, getWhatsAppConfig } from '@/lib/whatsapp';
 
 function getTodayStr() {
   const d = new Date();
@@ -80,6 +81,32 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       data: updateData,
       include: { service: true, officer: { select: { id: true, name: true, role: true } }, queue: { include: { service: true, counter: true } } },
     });
+
+    // Send WhatsApp notification after successful verification
+    if (status === 'diverifikasi' && registration.visitorPhone) {
+      try {
+        const settings = await db.setting.findMany();
+        const waConfig = getWhatsAppConfig(settings);
+        if (waConfig) {
+          await sendWhatsAppNotification({
+            phone: registration.visitorPhone,
+            registrationCode: registration.code,
+            queueNumber: registration.queue?.number,
+            visitorName: registration.visitorName,
+            inmateName: registration.inmateName,
+            visitDate: registration.visitDate,
+            serviceName: registration.service.name,
+            config: waConfig,
+          });
+          console.log(`[WhatsApp] Notification sent for ${registration.code}`);
+        } else {
+          console.log('[WhatsApp] Skipped — no WA API key configured in settings');
+        }
+      } catch (waError) {
+        // Don't fail the verification if WhatsApp fails
+        console.error('[WhatsApp] Notification failed (non-blocking):', waError);
+      }
+    }
 
     return NextResponse.json({ registration });
   } catch (error) {

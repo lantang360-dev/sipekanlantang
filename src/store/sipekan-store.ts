@@ -10,7 +10,8 @@ export type PageType =
   | 'petugas-dashboard'
   | 'petugas-detail'
   | 'display-antrian'
-  | 'rekapitulasi';
+  | 'rekapitulasi'
+  | 'settings';
 
 interface Officer {
   id: string;
