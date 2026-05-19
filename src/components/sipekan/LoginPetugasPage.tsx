@@ -43,7 +43,7 @@ export function LoginPetugasPage() {
       <div className="bg-white rounded-xl border border-gray-200 shadow-lg p-8">
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-[#0f1b3d] text-white flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-full bg-[#0f1d3e] text-white flex items-center justify-center mx-auto mb-4">
             <Shield className="w-8 h-8" />
           </div>
           <h2 className="text-xl font-bold">Login Petugas</h2>
@@ -68,7 +68,7 @@ export function LoginPetugasPage() {
             <Label className="text-xs font-semibold">Password</Label>
             <Input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Masukkan password" className="mt-1" required />
           </div>
-          <Button type="submit" disabled={loading} className="w-full bg-[#0f1b3d] hover:bg-[#162d5a] py-3">
+          <Button type="submit" disabled={loading} className="w-full bg-[#0f1d3e] hover:bg-[#162b52] py-3">
             {loading ? 'Memproses...' : 'Masuk'}
           </Button>
         </form>

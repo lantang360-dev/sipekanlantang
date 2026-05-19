@@ -25,10 +25,10 @@ function speakQueueNumber(number: string) {
   // Cancel any ongoing speech
   window.speechSynthesis.cancel();
 
-  // Parse the queue number (e.g., "B-0001" -> "B dash 0001")
+  // Parse the queue number (e.g., "B-001" -> "B dash 001")
   const parts = number.split('-');
   const spokenParts = parts.map(part => {
-    // If it's a number string like "0001", spell out digits
+    // If it's a number string like "001", spell out digits
     if (/^\d+$/.test(part)) {
       return part.split('').join(' ');
     }
@@ -134,7 +134,7 @@ export function AntrianPage() {
           <h2 className="text-xl font-bold mb-2">Antrian Berhasil Diambil!</h2>
           <p className="text-gray-500 text-sm mb-6">Simpan nomor antrian Anda</p>
 
-          <div className="inline-flex items-center gap-3 bg-[#0f1b3d] text-white rounded-xl px-8 py-5 text-4xl font-black tracking-widest shadow-lg mb-6 print:bg-white print:text-[#0f1b3d] print:shadow-none print:border print:border-gray-300 print:rounded-lg">
+          <div className="inline-flex items-center gap-3 bg-[#0f1d3e] text-white rounded-xl px-8 py-5 text-4xl font-black tracking-widest shadow-lg mb-6 print:bg-white print:text-[#0f1d3e] print:shadow-none print:border print:border-gray-300 print:rounded-lg">
             {successData.number}
           </div>
 
@@ -158,7 +158,7 @@ export function AntrianPage() {
           </div>
 
           <div className="flex gap-3 justify-center flex-wrap print-hidden">
-            <Button onClick={() => window.print()} className="flex items-center gap-2 bg-[#0f1b3d] hover:bg-[#162d5a] text-white">
+            <Button onClick={() => window.print()} className="flex items-center gap-2 bg-[#0f1d3e] hover:bg-[#162b52] text-white">
               <Printer className="w-4 h-4" /> Cetak Tiket
             </Button>
             {speechSupported && (
@@ -196,7 +196,7 @@ export function AntrianPage() {
             body { background: white !important; }
             .print-ticket { border: 2px dashed #ccc !important; padding: 24px !important; }
             .print\\:bg-white { background: white !important; }
-            .print\\:text-\\[\\#0f1b3d\\] { color: #0f1b3d !important; }
+            .print\\:text-\\[\\#0f1d3e\\] { color: #0f1d3e !important; }
             .print\\:shadow-none { box-shadow: none !important; }
             .print\\:border { border: 2px solid #333 !important; }
             .print\\:rounded-lg { border-radius: 8px !important; }
@@ -216,7 +216,7 @@ export function AntrianPage() {
 
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-          <Shield className="w-5 h-5 text-[#0f1b3d]" />
+          <Shield className="w-5 h-5 text-[#0f1d3e]" />
         </div>
         <div>
           <h1 className="text-lg font-bold text-white">Ambil Antrian</h1>
@@ -226,8 +226,8 @@ export function AntrianPage() {
 
       {/* Info Banner */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3 mb-6">
-        <Clock className="w-5 h-5 text-[#0f1b3d] shrink-0 mt-0.5" />
-        <p className="text-sm text-[#0f1b3d]">
+        <Clock className="w-5 h-5 text-[#0f1d3e] shrink-0 mt-0.5" />
+        <p className="text-sm text-[#0f1d3e]">
           Pilih layanan yang Anda butuhkan. Nomor antrian akan diberikan secara otomatis.
         </p>
       </div>
@@ -236,18 +236,18 @@ export function AntrianPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {services.map(service => (
           <div key={service.id}
-            className="bg-white rounded-xl border-2 border-gray-200 p-6 hover:border-[#0f1b3d] hover:shadow-md transition cursor-default">
-            <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center mb-3 text-[#0f1b3d]">
+            className="bg-white rounded-xl border-2 border-gray-200 p-6 hover:border-[#0f1d3e] hover:shadow-md transition cursor-default">
+            <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center mb-3 text-[#0f1d3e]">
               {SERVICE_ICONS[service.prefix] || <Shield className="w-6 h-6" />}
             </div>
             <div className="font-bold text-sm mb-1">{service.name}</div>
             <div className="text-xs text-gray-500 leading-relaxed mb-2">{service.description}</div>
-            <div className="text-xs text-[#0f1b3d] font-semibold mb-4">Estimasi: ~{service.estimatedMin} menit</div>
+            <div className="text-xs text-[#0f1d3e] font-semibold mb-4">Estimasi: ~{service.estimatedMin} menit</div>
             <div className="border-t pt-4">
               <Button
                 onClick={() => takeQueue(service.id)}
                 disabled={loading}
-                className="w-full bg-[#0f1b3d] hover:bg-[#162d5a] text-white"
+                className="w-full bg-[#0f1d3e] hover:bg-[#162b52] text-white"
               >
                 {loading ? 'Memproses...' : 'Ambil Nomor Antrian'}
               </Button>

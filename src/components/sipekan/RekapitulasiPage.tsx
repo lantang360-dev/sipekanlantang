@@ -44,7 +44,7 @@ export function RekapitulasiPage() {
 
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-          <BarChart3 className="w-5 h-5 text-[#0f1b3d]" />
+          <BarChart3 className="w-5 h-5 text-[#0f1d3e]" />
         </div>
         <div>
           <h1 className="text-lg font-bold text-white">Rekapitulasi Harian</h1>
@@ -55,10 +55,10 @@ export function RekapitulasiPage() {
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'Total Antrian', value: stats.totalQueues, icon: <Users className="w-5 h-5 text-[#0f1b3d]" />, bg: 'bg-blue-50' },
+          { label: 'Total Antrian', value: stats.totalQueues, icon: <Users className="w-5 h-5 text-[#0f1d3e]" />, bg: 'bg-blue-50' },
           { label: 'Menunggu', value: stats.waitingQueues, icon: <Clock className="w-5 h-5 text-amber-600" />, bg: 'bg-amber-50' },
           { label: 'Dilayani', value: stats.servedQueues, icon: <CheckCircle className="w-5 h-5 text-green-600" />, bg: 'bg-green-50' },
-          { label: 'Pendaftaran', value: stats.totalRegistrations, icon: <BarChart3 className="w-5 h-5 text-[#0f1b3d]" />, bg: 'bg-blue-50' },
+          { label: 'Pendaftaran', value: stats.totalRegistrations, icon: <BarChart3 className="w-5 h-5 text-[#0f1d3e]" />, bg: 'bg-blue-50' },
         ].map((stat, i) => (
           <div key={i} className="bg-white rounded-lg border border-gray-200 p-4">
             <div className={`w-9 h-9 rounded-lg ${stat.bg} flex items-center justify-center mb-2`}>{stat.icon}</div>
@@ -73,10 +73,10 @@ export function RekapitulasiPage() {
         <h3 className="font-bold text-sm mb-3">Progres Pelayanan</h3>
         <div className="flex items-center gap-3 mb-2">
           <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-[#0f1b3d] to-amber-400 rounded-full transition-all duration-1000"
+            <div className="h-full bg-gradient-to-r from-[#0f1d3e] to-amber-400 rounded-full transition-all duration-1000"
               style={{ width: `${progress}%` }} />
           </div>
-          <span className="text-sm font-bold text-[#0f1b3d]">{progress}%</span>
+          <span className="text-sm font-bold text-[#0f1d3e]">{progress}%</span>
         </div>
         <p className="text-xs text-gray-500">{stats.servedQueues} dari {stats.totalQueues} antrian telah dilayani</p>
       </div>
@@ -87,13 +87,13 @@ export function RekapitulasiPage() {
         <div className="space-y-3">
           {stats.services.map((s, i) => (
             <div key={i} className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#0f1b3d]/8 flex items-center justify-center text-[#0f1b3d] font-bold text-xs">
+              <div className="w-10 h-10 rounded-lg bg-[#0f1d3e]/8 flex items-center justify-center text-[#0f1d3e] font-bold text-xs">
                 {s.prefix}
               </div>
               <div className="flex-1">
                 <div className="text-sm font-semibold">{s.name}</div>
                 <div className="w-full h-2 bg-gray-100 rounded-full mt-1 overflow-hidden">
-                  <div className="h-full bg-[#0f1b3d] rounded-full"
+                  <div className="h-full bg-[#0f1d3e] rounded-full"
                     style={{ width: `${stats.totalQueues > 0 ? (s._count.queues / stats.totalQueues) * 100 : 0}%` }} />
                 </div>
               </div>

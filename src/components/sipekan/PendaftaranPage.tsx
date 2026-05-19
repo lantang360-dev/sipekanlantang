@@ -66,13 +66,13 @@ export function PendaftaranPage() {
           </div>
           <h2 className="text-xl font-bold mb-2">Pendaftaran Berhasil!</h2>
           <p className="text-gray-500 text-sm mb-4">Kode pendaftaran Anda:</p>
-          <div className="inline-flex items-center bg-[#0f1b3d] text-white rounded-xl px-8 py-4 text-2xl font-black tracking-wider mb-6">
+          <div className="inline-flex items-center bg-[#0f1d3e] text-white rounded-xl px-8 py-4 text-2xl font-black tracking-wider mb-6">
             {success}
           </div>
           <p className="text-xs text-gray-500 mb-6">Simpan kode ini untuk memantau status pendaftaran Anda.</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Button variant="outline" onClick={() => setCurrentPage('status-antrian')}>Cek Status Pendaftaran</Button>
-            <Button onClick={() => setCurrentPage('dashboard')} className="bg-[#0f1b3d] hover:bg-[#162d5a]">Kembali ke Dashboard</Button>
+            <Button onClick={() => setCurrentPage('dashboard')} className="bg-[#0f1d3e] hover:bg-[#162b52]">Kembali ke Dashboard</Button>
           </div>
         </div>
       </div>
@@ -88,7 +88,7 @@ export function PendaftaranPage() {
 
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-          <UserPlus className="w-5 h-5 text-[#0f1b3d]" />
+          <UserPlus className="w-5 h-5 text-[#0f1d3e]" />
         </div>
         <div>
           <h1 className="text-lg font-bold text-white">Pendaftaran Kunjungan</h1>
@@ -100,7 +100,7 @@ export function PendaftaranPage() {
         {/* Data Pengunjung */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm mb-4 pb-2 border-b-2 border-blue-50 flex items-center gap-2">
-            <UserPlus className="w-4 h-4 text-[#0f1b3d]" /> Data Pengunjung
+            <UserPlus className="w-4 h-4 text-[#0f1d3e]" /> Data Pengunjung
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
@@ -138,7 +138,7 @@ export function PendaftaranPage() {
         {/* Data Warga Binaan */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm mb-4 pb-2 border-b-2 border-blue-50 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-[#0f1b3d]" /> Data Warga Binaan
+            <FileText className="w-4 h-4 text-[#0f1d3e]" /> Data Warga Binaan
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
@@ -155,7 +155,7 @@ export function PendaftaranPage() {
         {/* Detail Kunjungan */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm mb-4 pb-2 border-b-2 border-blue-50 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-[#0f1b3d]" /> Detail Kunjungan
+            <FileText className="w-4 h-4 text-[#0f1d3e]" /> Detail Kunjungan
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
@@ -186,7 +186,7 @@ export function PendaftaranPage() {
         {/* Dokumen */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm mb-4 pb-2 border-b-2 border-blue-50 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-[#0f1b3d]" /> Kelengkapan Dokumen
+            <FileText className="w-4 h-4 text-[#0f1d3e]" /> Kelengkapan Dokumen
           </h3>
           <div className="space-y-3">
             <label className="flex items-start gap-3 cursor-pointer text-sm">
@@ -209,7 +209,7 @@ export function PendaftaranPage() {
           <span>Pastikan semua data yang dimasukkan sudah benar. Data yang tidak valid dapat menyebabkan pendaftaran ditolak.</span>
         </div>
 
-        <Button type="submit" disabled={loading} className="w-full bg-[#0f1b3d] hover:bg-[#162d5a] text-white py-3">
+        <Button type="submit" disabled={loading} className="w-full bg-[#0f1d3e] hover:bg-[#162b52] text-white py-3">
           {loading ? 'Memproses...' : 'Kirim Pendaftaran'}
         </Button>
       </form>

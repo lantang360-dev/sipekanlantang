@@ -99,7 +99,7 @@ export function StatusAntrianPage() {
 
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-          <Search className="w-5 h-5 text-[#0f1b3d]" />
+          <Search className="w-5 h-5 text-[#0f1d3e]" />
         </div>
         <div>
           <h1 className="text-lg font-bold text-white">Cek Status Antrian</h1>
@@ -113,16 +113,16 @@ export function StatusAntrianPage() {
           <Input
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
-            placeholder="Contoh: B-0001"
+            placeholder="Contoh: B-001"
             className="flex-1"
             onKeyDown={e => e.key === 'Enter' && handleSearch()}
           />
-          <Button onClick={handleSearch} disabled={loading} className="bg-[#0f1b3d] hover:bg-[#162d5a]">
+          <Button onClick={handleSearch} disabled={loading} className="bg-[#0f1d3e] hover:bg-[#162b52]">
             <Search className="w-4 h-4 mr-1" /> Cari
           </Button>
         </div>
         {lastQueueNumber && (
-          <button onClick={useLastQueue} className="text-xs text-[#0f1b3d] font-medium mt-2 hover:underline">
+          <button onClick={useLastQueue} className="text-xs text-[#0f1d3e] font-medium mt-2 hover:underline">
             Gunakan nomor antrian terakhir: {lastQueueNumber}
           </button>
         )}
@@ -170,7 +170,7 @@ export function StatusAntrianPage() {
       {/* Recent Called Queues */}
       <div className="bg-white rounded-lg border border-gray-200 p-5">
         <div className="flex items-center gap-2 mb-4">
-          <ListOrdered className="w-4 h-4 text-[#0f1b3d]" />
+          <ListOrdered className="w-4 h-4 text-[#0f1d3e]" />
           <h3 className="text-sm font-bold text-gray-800">Antrian Terakhir Dipanggil</h3>
         </div>
         {recentQueues.length === 0 ? (
@@ -184,7 +184,7 @@ export function StatusAntrianPage() {
               <div key={q.number + i}
                 className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#0f1b3d] text-white flex items-center justify-center text-xs font-bold">
+                  <div className="w-8 h-8 rounded-lg bg-[#0f1d3e] text-white flex items-center justify-center text-xs font-bold">
                     {q.number.split('-')[0]}
                   </div>
                   <div>

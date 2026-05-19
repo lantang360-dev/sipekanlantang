@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       nextNum = parseInt(parts[1], 10) + 1;
     }
 
-    const number = `${service.prefix}-${String(nextNum).padStart(4, '0')}`;
+    const number = `${service.prefix}-${String(nextNum).padStart(3, '0')}`;
 
     const queue = await db.queue.create({
       data: {

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useSipekanStore, PageType } from '@/store/sipekan-store';
+import { useSipekanStore } from '@/store/sipekan-store';
+import { useEffect, useState } from 'react';
 import { Header } from '@/components/sipekan/Header';
 import { Footer } from '@/components/sipekan/Footer';
 import { DashboardPage } from '@/components/sipekan/DashboardPage';
@@ -23,10 +23,8 @@ export default function Home() {
     setShowDisplay(currentPage === 'display-antrian');
   }, [currentPage]);
 
-  // Auto-refresh stats every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      // Trigger re-render by updating time-based state
       window.dispatchEvent(new CustomEvent('sipekan-refresh'));
     }, 30000);
     return () => clearInterval(interval);
@@ -51,11 +49,16 @@ export default function Home() {
     return <DisplayAntrianPage />;
   }
 
+  // Dashboard has its own background (dark + image), other pages are white
+  const isDashboard = currentPage === 'dashboard';
+
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#0f1b3d' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: isDashboard ? '#0f1d3e' : '#f8f9fc' }}>
       <Header />
-      <main className="flex-1 relative z-2" style={{ background: '#0f1b3d' }}>
-        {renderPage()}
+      <main className={`flex-1 relative z-[2] ${isDashboard ? '' : 'p-4 md:p-6'}`}>
+        <div className={isDashboard ? '' : 'max-w-[1280px] mx-auto'}>
+          {renderPage()}
+        </div>
       </main>
       <Footer />
     </div>

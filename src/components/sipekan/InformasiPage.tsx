@@ -17,7 +17,7 @@ export function InformasiPage() {
 
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-          <Info className="w-5 h-5 text-[#0f1b3d]" />
+          <Info className="w-5 h-5 text-[#0f1d3e]" />
         </div>
         <div>
           <h1 className="text-lg font-bold text-white">Informasi Besukan</h1>
@@ -28,8 +28,8 @@ export function InformasiPage() {
       {/* Panduan Pengguna Section */}
       <div className="bg-white rounded-lg border border-gray-200 p-5 mb-4">
         <div className="flex items-center gap-2 mb-4 pb-2 border-b-2 border-amber-100">
-          <BookOpen className="w-5 h-5 text-[#0f1b3d]" />
-          <h2 className="font-bold text-sm text-[#0f1b3d]">Panduan Pengguna SIPEKAN</h2>
+          <BookOpen className="w-5 h-5 text-[#0f1d3e]" />
+          <h2 className="font-bold text-sm text-[#0f1d3e]">Panduan Pengguna SIPEKAN</h2>
         </div>
         <p className="text-xs text-gray-500 mb-4 leading-relaxed">
           Ikuti langkah-langkah berikut untuk menggunakan layanan SIPEKAN dengan mudah dan cepat.
@@ -42,7 +42,7 @@ export function InformasiPage() {
               title: 'Daftar Kunjungan',
               desc: 'Isi formulir pendaftaran kunjungan online dengan data diri Anda dan informasi warga binaan.',
               page: 'pendaftaran' as const,
-              color: 'bg-[#0f1b3d]',
+              color: 'bg-[#0f1d3e]',
             },
             {
               step: 2,
@@ -72,7 +72,7 @@ export function InformasiPage() {
             <button
               key={i}
               onClick={() => item.page && setCurrentPage(item.page)}
-              className={`text-left border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-[#0f1b3d]/20 transition ${item.page ? 'cursor-pointer' : 'cursor-default'}`}
+              className={`text-left border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-[#0f1d3e]/20 transition ${item.page ? 'cursor-pointer' : 'cursor-default'}`}
             >
               <div className="flex items-start gap-3">
                 <div className={`w-10 h-10 rounded-lg ${item.color} flex items-center justify-center shrink-0`}>
@@ -87,7 +87,7 @@ export function InformasiPage() {
                   </div>
                   <p className="text-xs text-gray-500 leading-relaxed">{item.desc}</p>
                   {item.page && (
-                    <span className="inline-block mt-2 text-[10px] font-semibold text-[#0f1b3d] bg-[#0f1b3d]/5 px-2 py-0.5 rounded">
+                    <span className="inline-block mt-2 text-[10px] font-semibold text-[#0f1d3e] bg-[#0f1d3e]/5 px-2 py-0.5 rounded">
                       Klik untuk mulai →
                     </span>
                   )}
@@ -113,7 +113,7 @@ export function InformasiPage() {
                 'Memasuki ruang besukan sesuai jadwal yang ditentukan',
               ].map((item, i) => (
                 <li key={i} className="flex gap-3 items-start text-sm text-gray-600">
-                  <span className="w-7 h-7 rounded-full bg-[#0f1b3d] text-white flex items-center justify-center text-xs font-bold shrink-0">{i + 1}</span>
+                  <span className="w-7 h-7 rounded-full bg-[#0f1d3e] text-white flex items-center justify-center text-xs font-bold shrink-0">{i + 1}</span>
                   <span className="pt-1">{item}</span>
                 </li>
               ))}
@@ -193,7 +193,7 @@ export function InformasiPage() {
                 { title: 'Keterampilan Kerja', desc: 'Pelatihan menjahit, bertani, kerajinan tangan dll', badge: 'Pilihan' },
               ].map((p, i) => (
                 <div key={i} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition">
-                  <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-bold mb-2 ${p.badge === 'Wajib' ? 'bg-blue-50 text-[#0f1b3d]' : 'bg-amber-50 text-amber-700'}`}>
+                  <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-bold mb-2 ${p.badge === 'Wajib' ? 'bg-blue-50 text-[#0f1d3e]' : 'bg-amber-50 text-amber-700'}`}>
                     {p.badge}
                   </span>
                   <h4 className="font-bold text-sm mb-1">{p.title}</h4>

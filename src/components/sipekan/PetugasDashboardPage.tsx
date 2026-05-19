@@ -81,7 +81,7 @@ export function PetugasDashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#0f1b3d] text-white flex items-center justify-center font-bold text-lg">
+          <div className="w-10 h-10 rounded-full bg-[#0f1d3e] text-white flex items-center justify-center font-bold text-lg">
             {officer.name.charAt(0)}
           </div>
           <div>
@@ -108,7 +108,7 @@ export function PetugasDashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'Total', value: registrations.length, icon: <FileText className="w-5 h-5 text-[#0f1b3d]" />, bg: 'bg-blue-50' },
+          { label: 'Total', value: registrations.length, icon: <FileText className="w-5 h-5 text-[#0f1d3e]" />, bg: 'bg-blue-50' },
           { label: 'Menunggu', value: registrations.filter(r => r.status === 'menunggu').length, icon: <Clock className="w-5 h-5 text-amber-600" />, bg: 'bg-amber-50' },
           { label: 'Diverifikasi', value: registrations.filter(r => r.status === 'diverifikasi').length, icon: <CheckCircle className="w-5 h-5 text-green-600" />, bg: 'bg-green-50' },
           { label: 'Ditolak', value: registrations.filter(r => r.status === 'ditolak').length, icon: <XCircle className="w-5 h-5 text-red-600" />, bg: 'bg-red-50' },
@@ -126,7 +126,7 @@ export function PetugasDashboardPage() {
         {['semua', 'menunggu', 'diverifikasi', 'ditolak'].map(f => (
           <button key={f} onClick={() => setFilter(f)}
             className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition ${
-              filter === f ? 'bg-[#0f1b3d] text-white border-[#0f1b3d]' : 'bg-white text-gray-500 border-gray-200 hover:border-[#0f1b3d] hover:text-[#0f1b3d]'
+              filter === f ? 'bg-[#0f1d3e] text-white border-[#0f1d3e]' : 'bg-white text-gray-500 border-gray-200 hover:border-[#0f1d3e] hover:text-[#0f1d3e]'
             }`}>
             {f === 'semua' ? 'Semua' : f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
@@ -134,7 +134,7 @@ export function PetugasDashboardPage() {
         <div className="flex-1 min-w-[200px]">
           <Input placeholder="Cari nama/NIK..." value={search} onChange={e => setSearch(e.target.value)} className="h-8 text-xs" />
         </div>
-        <Button size="sm" onClick={loadRegistrations} className="text-xs bg-[#0f1b3d] hover:bg-[#162d5a]">Cari</Button>
+        <Button size="sm" onClick={loadRegistrations} className="text-xs bg-[#0f1d3e] hover:bg-[#162b52]">Cari</Button>
       </div>
 
       {/* Registration List */}
@@ -151,20 +151,20 @@ export function PetugasDashboardPage() {
           registrations.map(reg => (
             <div key={reg.id}
               onClick={() => { setSelectedRegistrationId(reg.id); setCurrentPage('petugas-detail'); }}
-              className="bg-white rounded-lg border border-gray-200 p-4 cursor-pointer hover:border-[#0f1b3d] hover:shadow-md transition hover:-translate-y-0.5">
+              className="bg-white rounded-lg border border-gray-200 p-4 cursor-pointer hover:border-[#0f1d3e] hover:shadow-md transition hover:-translate-y-0.5">
               <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
                 <span className="font-bold text-sm font-mono">{reg.code}</span>
                 {getStatusBadge(reg.status)}
               </div>
               <div className="grid grid-cols-2 gap-1 text-xs text-gray-500">
-                <span className="flex items-center gap-1"><Users className="w-3 h-3 text-[#0f1b3d]" /> {reg.visitorName}</span>
-                <span className="flex items-center gap-1"><FileText className="w-3 h-3 text-[#0f1b3d]" /> {reg.inmateName}</span>
-                <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-[#0f1b3d]" /> {reg.visitDate}</span>
+                <span className="flex items-center gap-1"><Users className="w-3 h-3 text-[#0f1d3e]" /> {reg.visitorName}</span>
+                <span className="flex items-center gap-1"><FileText className="w-3 h-3 text-[#0f1d3e]" /> {reg.inmateName}</span>
+                <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-[#0f1d3e]" /> {reg.visitDate}</span>
                 <span>{reg.service?.name}</span>
               </div>
               <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t text-[11px] text-gray-400">
                 <span>{new Date(reg.createdAt).toLocaleDateString('id-ID')}</span>
-                <span className="text-[#0f1b3d] font-semibold flex items-center gap-1"><Eye className="w-3 h-3" /> Detail</span>
+                <span className="text-[#0f1d3e] font-semibold flex items-center gap-1"><Eye className="w-3 h-3" /> Detail</span>
               </div>
             </div>
           ))

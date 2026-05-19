@@ -85,12 +85,12 @@ export function PetugasDetailPage() {
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; max-width: 320px; margin: 0 auto; }
           .header { text-align: center; border-bottom: 2px dashed #333; padding-bottom: 12px; margin-bottom: 12px; }
-          .header h1 { font-size: 18px; color: #0f1b3d; letter-spacing: 2px; margin-bottom: 2px; }
+          .header h1 { font-size: 18px; color: #0f1d3e; letter-spacing: 2px; margin-bottom: 2px; }
           .header p { font-size: 10px; color: #666; }
           .header .subtitle { font-size: 11px; color: #333; font-weight: 600; margin-top: 4px; }
-          .queue-box { text-align: center; border: 3px solid #0f1b3d; border-radius: 8px; padding: 16px; margin: 12px 0; }
+          .queue-box { text-align: center; border: 3px solid #0f1d3e; border-radius: 8px; padding: 16px; margin: 12px 0; }
           .queue-box .label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
-          .queue-box .number { font-size: 36px; font-weight: 900; color: #0f1b3d; letter-spacing: 4px; }
+          .queue-box .number { font-size: 36px; font-weight: 900; color: #0f1d3e; letter-spacing: 4px; }
           .info-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dotted #ddd; font-size: 11px; }
           .info-row .label { color: #666; }
           .info-row .value { font-weight: 600; color: #222; text-align: right; max-width: 60%; }
@@ -160,7 +160,7 @@ export function PetugasDetailPage() {
         {/* Main Detail */}
         <div className="bg-white rounded-lg border border-gray-200 p-5">
           <h3 className="font-bold text-sm mb-4 pb-2 border-b-2 border-blue-50 flex items-center gap-2">
-            <User className="w-4 h-4 text-[#0f1b3d]" /> Detail Pendaftaran
+            <User className="w-4 h-4 text-[#0f1d3e]" /> Detail Pendaftaran
           </h3>
           {[
             { label: 'Kode', value: reg.code },
@@ -184,7 +184,7 @@ export function PetugasDetailPage() {
 
           {/* Queue Number (if verified and linked) */}
           {isVerified && reg.queue && (
-            <div className="mt-4 p-3 bg-[#0f1b3d] rounded-lg text-center">
+            <div className="mt-4 p-3 bg-[#0f1d3e] rounded-lg text-center">
               <p className="text-amber-400 text-xs font-semibold uppercase tracking-wider mb-1">Nomor Antrian</p>
               <p className="text-white text-3xl font-black tracking-widest">{reg.queue.number}</p>
             </div>
@@ -257,7 +257,7 @@ export function PetugasDetailPage() {
                 Cetak bukti pendaftaran yang telah diverifikasi untuk diberikan kepada pengunjung.
               </p>
               <Button onClick={handlePrintReceipt}
-                className="w-full bg-[#0f1b3d] hover:bg-[#162d5a] text-white">
+                className="w-full bg-[#0f1d3e] hover:bg-[#162b52] text-white">
                 <Printer className="w-4 h-4 mr-2" /> Cetak Bukti Pendaftaran
               </Button>
             </div>

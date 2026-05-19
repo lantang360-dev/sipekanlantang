@@ -56,7 +56,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
           nextNum = parseInt(parts[1], 10) + 1;
         }
 
-        const number = `${registration.service.prefix}-${String(nextNum).padStart(4, '0')}`;
+        const number = `${registration.service.prefix}-${String(nextNum).padStart(3, '0')}`;
 
         const newQueue = await db.queue.create({
           data: {

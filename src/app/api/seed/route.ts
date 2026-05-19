@@ -52,14 +52,13 @@ export async function GET(request: Request) {
       db.service.upsert({ where: { prefix: 'A' }, update: {}, create: { name: 'Layanan Umum', prefix: 'A', description: 'Layanan administrasi dan informasi umum', estimatedMin: 10, order: 3 } }),
     ]);
 
-    // Seed counters
+    // Seed counters — exactly 3 loket
     const existingCounters = await db.counter.count();
     if (existingCounters === 0) {
       await db.counter.createMany({ data: [
         { name: 'Loket 1', serviceId: services[0].id, status: 'aktif', currentNum: '', order: 1 },
         { name: 'Loket 2', serviceId: services[0].id, status: 'aktif', currentNum: '', order: 2 },
         { name: 'Loket 3', serviceId: services[1].id, status: 'aktif', currentNum: '', order: 3 },
-        { name: 'Loket 4', serviceId: services[2].id, status: 'aktif', currentNum: '', order: 4 },
       ]});
     }
 
