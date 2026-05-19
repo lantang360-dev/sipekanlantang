@@ -2,7 +2,7 @@
 
 import { useSipekanStore } from '@/store/sipekan-store';
 import { useState, useEffect, useCallback } from 'react';
-import { ArrowLeft, Settings, MessageSquare, Key, Globe, Save, CheckCircle, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Settings, MessageSquare, Key, Globe, Save, CheckCircle, AlertTriangle, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +12,9 @@ export function SettingsPage() {
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [testPhone, setTestPhone] = useState('');
+  const [testLoading, setTestLoading] = useState(false);
+  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
   // Only admin can access settings
   useEffect(() => {
@@ -69,6 +72,32 @@ export function SettingsPage() {
     }
   }, [settings]);
 
+  const handleTestWhatsApp = useCallback(async () => {
+    if (!testPhone) {
+      setTestResult({ success: false, message: 'Masukkan nomor telepon terlebih dahulu' });
+      return;
+    }
+    setTestLoading(true);
+    setTestResult(null);
+    try {
+      const res = await fetch('/api/whatsapp/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: testPhone }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTestResult({ success: true, message: `✅ Pesan test berhasil terkirim ke ${testPhone}! Cek WhatsApp Anda.` });
+      } else {
+        setTestResult({ success: false, message: `❌ Gagal: ${data.error || 'Unknown error'}` });
+      }
+    } catch (err) {
+      setTestResult({ success: false, message: `❌ Error: ${err instanceof Error ? err.message : 'Gagal menghubungi server'}` });
+    } finally {
+      setTestLoading(false);
+    }
+  }, [testPhone]);
+
   if (officer?.role !== 'admin') return null;
 
   const waApiKey = settings['wa_api_key'] || '';
@@ -112,7 +141,7 @@ export function SettingsPage() {
             <p className="text-xs text-gray-700 leading-relaxed">
               {isWaConfigured
                 ? 'WhatsApp terkonfigurasi. Pengunjung akan menerima notifikasi WhatsApp saat pendaftaran diverifikasi.'
-                : 'WhatsApp belum dikonfigurasi. Daftar di fonnte.com, masukkan API key di bawah, lalu re-seed database.'}
+                : 'WhatsApp belum dikonfigurasi. Daftar di fonnte.com, masukkan API key di bawah.'}
             </p>
           </div>
 
@@ -161,6 +190,43 @@ export function SettingsPage() {
               <><Save className="w-4 h-4 mr-1" /> {loading ? 'Menyimpan...' : 'Simpan Pengaturan WhatsApp'}</>
             )}
           </Button>
+
+          {/* Test WhatsApp Section */}
+          {isWaConfigured && (
+            <div className="border-t border-gray-200 pt-4 mt-4">
+              <Label className="text-xs font-semibold flex items-center gap-1 mb-2">
+                <Send className="w-3.5 h-3.5" /> Test Kirim WhatsApp
+              </Label>
+              <p className="text-xs text-gray-500 mb-3">
+                Kirim pesan test untuk memastikan integrasi WhatsApp berfungsi.
+              </p>
+              <div className="flex gap-2">
+                <Input
+                  value={testPhone}
+                  onChange={e => setTestPhone(e.target.value)}
+                  placeholder="08xxxxxxxxxx"
+                  className="flex-1"
+                />
+                <Button
+                  onClick={handleTestWhatsApp}
+                  disabled={testLoading || !testPhone}
+                  variant="outline"
+                  className="shrink-0"
+                >
+                  {testLoading ? (
+                    <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> Mengirim...</>
+                  ) : (
+                    <><Send className="w-4 h-4 mr-1" /> Test</>
+                  )}
+                </Button>
+              </div>
+              {testResult && (
+                <div className={`mt-3 p-3 rounded-lg text-xs ${testResult.success ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'}`}>
+                  {testResult.message}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -181,7 +247,7 @@ export function SettingsPage() {
             </div>
             <div className="flex items-start gap-3">
               <span className="w-6 h-6 rounded-full bg-green-100 text-green-700 flex items-center justify-center text-xs font-bold shrink-0">3</span>
-              <span>Sistem otomatis mengirim pesan WhatsApp berisi QR code & nomor registrasi ke pengunjung</span>
+              <span>Sistem otomatis mengirim pesan WhatsApp berisi No. Registrasi ke nomor pengunjung</span>
             </div>
             <div className="flex items-start gap-3">
               <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold shrink-0">!</span>

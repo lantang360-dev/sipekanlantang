@@ -4,7 +4,8 @@ import { useSipekanStore } from '@/store/sipekan-store';
 import { useState, useEffect } from 'react';
 import {
   ArrowLeft, CheckCircle, XCircle, User, FileText, Clock, Shield,
-  Printer, Upload, ClipboardCheck, ImageIcon, ZoomIn, X, AlertTriangle
+  Printer, Upload, ClipboardCheck, ImageIcon, ZoomIn, X, AlertTriangle,
+  MessageSquare
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -61,6 +62,7 @@ export function PetugasDetailPage() {
   const [loading, setLoading] = useState(false);
   const [showFotoZoom, setShowFotoZoom] = useState(false);
   const [showSignatureZoom, setShowSignatureZoom] = useState(false);
+  const [waStatus, setWaStatus] = useState<{ sent: boolean; message: string } | null>(null);
 
   useEffect(() => {
     if (selectedRegistrationId) {
@@ -87,6 +89,12 @@ export function PetugasDetailPage() {
       const data = await res.json();
       if (data.registration) {
         setReg(data.registration);
+      }
+      // Show WhatsApp status
+      if (data.waStatus) {
+        setWaStatus(data.waStatus);
+      } else if (newStatus === 'diverifikasi') {
+        setWaStatus(null);
       }
     } catch {
       alert('Gagal mengupdate status');
@@ -373,6 +381,16 @@ export function PetugasDetailPage() {
             )}
             {reg.verifyNote && (
               <p className="text-xs text-gray-500 mt-1 bg-gray-50 p-2 rounded">Catatan: {reg.verifyNote}</p>
+            )}
+            {/* WhatsApp Status */}
+            {waStatus && (
+              <div className={`mt-3 p-3 rounded-lg text-xs flex items-start gap-2 ${waStatus.sent ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-amber-50 border border-amber-200 text-amber-800'}`}>
+                <MessageSquare className="w-4 h-4 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold">{waStatus.sent ? 'WhatsApp Terkirim' : 'WhatsApp Tidak Terkirim'}</p>
+                  <p className="mt-0.5">{waStatus.message}</p>
+                </div>
+              </div>
             )}
           </div>
 

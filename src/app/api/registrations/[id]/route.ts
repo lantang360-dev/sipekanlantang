@@ -83,12 +83,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     });
 
     // Send WhatsApp notification after successful verification
+    let waStatus: { sent: boolean; message: string } | null = null;
+
     if (status === 'diverifikasi' && registration.visitorPhone) {
       try {
         const settings = await db.setting.findMany();
         const waConfig = getWhatsAppConfig(settings);
         if (waConfig) {
-          await sendWhatsAppNotification({
+          const waResult = await sendWhatsAppNotification({
             phone: registration.visitorPhone,
             registrationCode: registration.code,
             queueNumber: registration.queue?.number,
@@ -98,17 +100,26 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
             serviceName: registration.service.name,
             config: waConfig,
           });
-          console.log(`[WhatsApp] Notification sent for ${registration.code}`);
+          if (waResult.success) {
+            waStatus = { sent: true, message: `WhatsApp terkirim ke ${registration.visitorPhone}` };
+            console.log(`[WhatsApp] Notification sent for ${registration.code}`);
+          } else {
+            waStatus = { sent: false, message: `WhatsApp gagal: ${waResult.error || 'Unknown error'}` };
+            console.error(`[WhatsApp] Failed for ${registration.code}:`, waResult.error);
+          }
         } else {
+          waStatus = { sent: false, message: 'WhatsApp belum dikonfigurasi (API Key kosong)' };
           console.log('[WhatsApp] Skipped — no WA API key configured in settings');
         }
       } catch (waError) {
-        // Don't fail the verification if WhatsApp fails
+        waStatus = { sent: false, message: `WhatsApp error: ${waError instanceof Error ? waError.message : String(waError)}` };
         console.error('[WhatsApp] Notification failed (non-blocking):', waError);
       }
+    } else if (status === 'diverifikasi' && !registration.visitorPhone) {
+      waStatus = { sent: false, message: 'Pendaftar tidak mengisi nomor telepon' };
     }
 
-    return NextResponse.json({ registration });
+    return NextResponse.json({ registration, waStatus });
   } catch (error) {
     console.error('Registration PATCH error:', error);
     return NextResponse.json({ error: 'Gagal mengupdate pendaftaran' }, { status: 500 });
