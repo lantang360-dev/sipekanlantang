@@ -50,3 +50,6 @@ db/*.db-journal
 .idea
 *.swp
 *.swo
+
+.vercel
+.env*.local
