@@ -15,7 +15,7 @@ interface Stats {
 }
 
 export function RekapitulasiPage() {
-  const { setCurrentPage } = useSipekanStore();
+  const { setCurrentPage, officer } = useSipekanStore();
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export function RekapitulasiPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-      <button onClick={() => setCurrentPage('dashboard')}
+      <button onClick={() => setCurrentPage(officer ? 'petugas-dashboard' : 'dashboard')}
         className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-white border border-gray-200 text-sm font-medium hover:bg-gray-50 transition mb-5">
         <ArrowLeft className="w-4 h-4" /> Kembali
       </button>

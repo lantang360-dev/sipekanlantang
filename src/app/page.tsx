@@ -1,21 +1,24 @@
 'use client';
 
 import { useSipekanStore } from '@/store/sipekan-store';
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Header } from '@/components/sipekan/Header';
 import { Footer } from '@/components/sipekan/Footer';
-import { DashboardPage } from '@/components/sipekan/DashboardPage';
-import { AntrianPage } from '@/components/sipekan/AntrianPage';
-import { PendaftaranPage } from '@/components/sipekan/PendaftaranPage';
-import { InformasiPage } from '@/components/sipekan/InformasiPage';
-import { StatusAntrianPage } from '@/components/sipekan/StatusAntrianPage';
-import { LoginPetugasPage } from '@/components/sipekan/LoginPetugasPage';
-import { PetugasDashboardPage } from '@/components/sipekan/PetugasDashboardPage';
-import { PetugasDetailPage } from '@/components/sipekan/PetugasDetailPage';
-import { DisplayAntrianPage } from '@/components/sipekan/DisplayAntrianPage';
-import { RekapitulasiPage } from '@/components/sipekan/RekapitulasiPage';
+import dynamic from 'next/dynamic';
 
-const DARK_BG_PAGES = ['dashboard', 'petugas-dashboard', 'login-petugas', 'petugas-detail', 'rekapitulasi'];
+// Dynamic imports to reduce initial bundle size and memory usage
+const DashboardPage = dynamic(() => import('@/components/sipekan/DashboardPage').then(m => ({ default: m.DashboardPage })), { ssr: false });
+const AntrianPage = dynamic(() => import('@/components/sipekan/AntrianPage').then(m => ({ default: m.AntrianPage })), { ssr: false });
+const PendaftaranPage = dynamic(() => import('@/components/sipekan/PendaftaranPage').then(m => ({ default: m.PendaftaranPage })), { ssr: false });
+const InformasiPage = dynamic(() => import('@/components/sipekan/InformasiPage').then(m => ({ default: m.InformasiPage })), { ssr: false });
+const StatusAntrianPage = dynamic(() => import('@/components/sipekan/StatusAntrianPage').then(m => ({ default: m.StatusAntrianPage })), { ssr: false });
+const LoginPetugasPage = dynamic(() => import('@/components/sipekan/LoginPetugasPage').then(m => ({ default: m.LoginPetugasPage })), { ssr: false });
+const PetugasDashboardPage = dynamic(() => import('@/components/sipekan/PetugasDashboardPage').then(m => ({ default: m.PetugasDashboardPage })), { ssr: false });
+const PetugasDetailPage = dynamic(() => import('@/components/sipekan/PetugasDetailPage').then(m => ({ default: m.PetugasDetailPage })), { ssr: false });
+const RekapitulasiPage = dynamic(() => import('@/components/sipekan/RekapitulasiPage').then(m => ({ default: m.RekapitulasiPage })), { ssr: false });
+const DisplayAntrianPage = dynamic(() => import('@/components/sipekan/DisplayAntrianPage').then(m => ({ default: m.DisplayAntrianPage })), { ssr: false });
+
+const DARK_BG_PAGES = ['dashboard', 'pendaftaran', 'petugas-dashboard', 'login-petugas', 'petugas-detail', 'rekapitulasi', 'antrian', 'status-antrian', 'informasi'];
 
 export default function Home() {
   const { currentPage, officer, setCurrentPage } = useSipekanStore();
@@ -37,7 +40,7 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const renderPage = () => {
+  const renderPage = useCallback(() => {
     switch (currentPage) {
       case 'dashboard': return <DashboardPage />;
       case 'antrian': return <AntrianPage />;
@@ -50,7 +53,7 @@ export default function Home() {
       case 'rekapitulasi': return <RekapitulasiPage />;
       default: return <DashboardPage />;
     }
-  };
+  }, [currentPage]);
 
   if (showDisplay) {
     return <DisplayAntrianPage />;

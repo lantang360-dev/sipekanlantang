@@ -6,6 +6,7 @@ import {
   Menu, X, Clock, Shield, LogIn, UserCheck, Monitor, LogOut
 } from 'lucide-react';
 
+// Navigation items for public (not logged in) users - includes Ambil Antrian
 const NAV_ITEMS_PUBLIC: { label: string; page: PageType }[] = [
   { label: 'Beranda', page: 'dashboard' },
   { label: 'Ambil Antrian', page: 'antrian' },
@@ -14,6 +15,7 @@ const NAV_ITEMS_PUBLIC: { label: string; page: PageType }[] = [
   { label: 'Cek Antrian', page: 'status-antrian' },
 ];
 
+// Navigation items for logged-in petugas - includes Display Antrian
 const NAV_ITEMS_PETUGAS: { label: string; page: PageType }[] = [
   { label: 'Beranda', page: 'dashboard' },
   { label: 'Ambil Antrian', page: 'antrian' },
@@ -22,6 +24,13 @@ const NAV_ITEMS_PETUGAS: { label: string; page: PageType }[] = [
   { label: 'Cek Antrian', page: 'status-antrian' },
   { label: 'Display Antrian', page: 'display-antrian' },
 ];
+
+// Map sub-pages to their parent tab for active state highlighting
+const PAGE_TO_PARENT_TAB: Partial<Record<PageType, PageType>> = {
+  'petugas-detail': 'petugas-dashboard',
+  'display-antrian': 'display-antrian',
+  'rekapitulasi': 'petugas-dashboard',
+};
 
 export function Header() {
   const { currentPage, setCurrentPage, officer, setOfficer } = useSipekanStore();
@@ -45,6 +54,12 @@ export function Header() {
       setMobileOpen(false);
       return;
     }
+    // Ambil Antrian requires login
+    if (page === 'antrian' && !officer) {
+      setCurrentPage('login-petugas');
+      setMobileOpen(false);
+      return;
+    }
     setCurrentPage(page);
     setMobileOpen(false);
   };
@@ -58,12 +73,15 @@ export function Header() {
   // Choose nav items based on login status
   const navItems = officer ? NAV_ITEMS_PETUGAS : NAV_ITEMS_PUBLIC;
 
-  // Check if current page matches a nav item or is a sub-page
-  const isActive = (page: PageType) => {
-    if (currentPage === page) return true;
-    // Map petugas sub-pages to "Display Antrian" tab
-    if (page === 'display-antrian' && currentPage === 'display-antrian') return true;
-    return false;
+  // Resolve the effective "tab page" for active state highlighting
+  const resolveActivePage = (page: PageType): PageType => {
+    return PAGE_TO_PARENT_TAB[page] || page;
+  };
+
+  // Check if a nav item's page matches the current page (accounting for sub-pages)
+  const isActive = (navPage: PageType): boolean => {
+    const effectiveCurrentPage = resolveActivePage(currentPage);
+    return effectiveCurrentPage === navPage;
   };
 
   return (
@@ -130,55 +148,62 @@ export function Header() {
               </button>
             )}
 
-            {/* Hamburger */}
-            <button className="md:hidden flex items-center justify-center w-9 h-9 rounded-md hover:bg-white/15 transition cursor-pointer"
-              onClick={() => setMobileOpen(!mobileOpen)}>
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden flex items-center justify-center w-9 h-9 rounded-md hover:bg-white/15 transition cursor-pointer">
               {mobileOpen ? <X className="w-5 h-5 text-white" /> : <Menu className="w-5 h-5 text-white" />}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Menu */}
+      {/* Mobile Navigation Overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 bg-black/40 md:hidden" onClick={() => setMobileOpen(false)}>
-          <div className="bg-white shadow-xl max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <div className="p-3 border-b flex items-center gap-2">
-              <Clock className="w-3.5 h-3.5 text-gray-500" />
-              <span className="text-sm font-semibold text-gray-800 tabular-nums">{time}</span>
+        <div className="fixed inset-0 z-[9998] md:hidden">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+          <div className="absolute right-0 top-0 bottom-0 w-72 bg-[#0a1530] border-l border-white/10 shadow-2xl">
+            <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
+              <span className="text-white font-bold text-sm">Menu</span>
+              <button onClick={() => setMobileOpen(false)} className="w-8 h-8 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-white/50 hover:text-white transition">
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            {navItems.map(item => (
-              <button key={item.page}
-                onClick={() => navigate(item.page)}
-                className={`w-full text-left px-4 py-3 text-sm font-medium transition cursor-pointer ${
-                  isActive(item.page) ? 'bg-blue-50 text-[#0f1d3e]' : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-            {officer ? (
-              <div className="border-t">
-                <button onClick={() => navigate('petugas-dashboard')}
-                  className="w-full text-left px-4 py-3 text-sm font-bold cursor-pointer flex items-center gap-2"
-                  style={{ background: '#d4a843', color: '#fff' }}>
-                  <UserCheck className="w-4 h-4" />
-                  {officer.name}
+            <nav className="flex flex-col p-2">
+              {navItems.map(item => (
+                <button
+                  key={item.page}
+                  onClick={() => navigate(item.page)}
+                  className={`px-4 py-3 rounded-lg text-sm font-medium text-left transition cursor-pointer ${
+                    isActive(item.page)
+                      ? 'bg-white/10 text-amber-400'
+                      : 'text-white/70 hover:text-white hover:bg-white/5'
+                  }`}>
+                  {item.label}
                 </button>
-                <button onClick={handleLogout}
-                  className="w-full text-left px-4 py-3 text-sm font-medium cursor-pointer text-red-600 hover:bg-red-50 flex items-center gap-2">
-                  <LogOut className="w-4 h-4" />
-                  Logout
+              ))}
+              <div className="my-2 border-t border-white/10" />
+              {officer ? (
+                <>
+                  <button onClick={() => navigate('petugas-dashboard')}
+                    className="px-4 py-3 rounded-lg text-sm font-bold text-left cursor-pointer flex items-center gap-2"
+                    style={{ background: '#d4a843', color: '#fff' }}>
+                    <UserCheck className="w-4 h-4" />
+                    {officer.name}
+                  </button>
+                  <button onClick={handleLogout}
+                    className="px-4 py-3 rounded-lg text-sm font-medium text-left text-red-400 hover:bg-red-400/10 transition cursor-pointer flex items-center gap-2">
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => navigate('login-petugas')} className="px-4 py-3 rounded-lg text-sm font-bold text-left cursor-pointer" style={{ background: '#d4a843', color: '#fff' }}>
+                  <LogIn className="w-4 h-4 inline mr-2" />
+                  Login Petugas
                 </button>
-              </div>
-            ) : (
-              <button onClick={() => navigate('login-petugas')}
-                className="w-full text-left px-4 py-3 text-sm font-bold cursor-pointer"
-                style={{ background: '#d4a843', color: '#fff' }}>
-                <LogIn className="w-4 h-4 inline mr-2" />
-                Login Petugas
-              </button>
-            )}
+              )}
+            </nav>
           </div>
         </div>
       )}

@@ -39,13 +39,32 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const {
-      visitorName, visitorNik, visitorPhone, visitorAddress, visitorRelation,
-      inmateName, inmateNumber, visitDate, visitTime,
-      serviceId, visitorCount, documentKtp, documentSurat, documentOther,
+      // Informasi Pelaku
+      visitorName, visitorNik, tempatLahir, tanggalLahir, jenisKelamin,
+      pekerjaan, visitorAddress, visitorPhone, email,
+      // Informasi Berkas
+      visitorRelation, inmateName, inmateNumber, nomorBerkas,
+      jenisBerkas, tanggalBerkas, jenisPermohonan, keterangan,
+      // Detail Kunjungan
+      visitDate, visitTime, serviceId, visitorCount,
+      // Dokumen Pendukung
+      documentKtp, documentSurat, documentOther, fotoKtp,
+      // Persyaratan
+      persetujuanData, persetujuanAturan, persetujuanKonsekuensi, tandaTangan,
     } = body;
 
-    if (!visitorName || !visitorNik || !visitorPhone || !inmateName || !visitDate || !serviceId) {
+    if (!visitorName || !visitorNik || !inmateName || !visitDate || !serviceId) {
       return NextResponse.json({ error: 'Data pendaftaran tidak lengkap' }, { status: 400 });
+    }
+
+    // Require KTP photo upload
+    if (!fotoKtp) {
+      return NextResponse.json({ error: 'Foto KTP/Identitas wajib diupload' }, { status: 400 });
+    }
+
+    // Require all agreements
+    if (!persetujuanData || !persetujuanAturan || !persetujuanKonsekuensi) {
+      return NextResponse.json({ error: 'Semua persyaratan harus disetujui' }, { status: 400 });
     }
 
     const today = getTodayStr();
@@ -60,11 +79,21 @@ export async function POST(request: Request) {
         code,
         visitorName,
         visitorNik,
-        visitorPhone,
+        tempatLahir: tempatLahir || null,
+        tanggalLahir: tanggalLahir || null,
+        jenisKelamin: jenisKelamin || null,
+        pekerjaan: pekerjaan || null,
         visitorAddress: visitorAddress || null,
+        visitorPhone: visitorPhone || null,
+        email: email || null,
         visitorRelation: visitorRelation || 'Keluarga',
         inmateName,
         inmateNumber: inmateNumber || null,
+        nomorBerkas: nomorBerkas || null,
+        jenisBerkas: jenisBerkas || null,
+        tanggalBerkas: tanggalBerkas || null,
+        jenisPermohonan: jenisPermohonan || null,
+        keterangan: keterangan || null,
         visitDate,
         visitTime: visitTime || null,
         serviceId,
@@ -72,6 +101,11 @@ export async function POST(request: Request) {
         documentKtp: documentKtp || false,
         documentSurat: documentSurat || false,
         documentOther: documentOther || null,
+        fotoKtp: fotoKtp || null,
+        persetujuanData: persetujuanData || false,
+        persetujuanAturan: persetujuanAturan || false,
+        persetujuanKonsekuensi: persetujuanKonsekuensi || false,
+        tandaTangan: tandaTangan || null,
         status: 'menunggu',
       },
       include: { service: true },
@@ -80,6 +114,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ registration }, { status: 201 });
   } catch (error) {
     console.error('Registrations POST error:', error);
-    return NextResponse.json({ error: 'Gagal membuat pendaftaran' }, { status: 500 });
+    const msg = error instanceof Error ? error.message : 'Gagal membuat pendaftaran';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

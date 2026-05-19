@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -69,21 +69,48 @@ model Queue {
 model Registration {
   id                String    @id @default(cuid())
   code              String    @unique // REG-YYYYMMDD-XXXX
-  visitorName       String
-  visitorNik        String
-  visitorPhone      String?
-  visitorAddress    String?
-  visitorRelation   String    // hubungan dengan warga binaan
-  inmateName        String
-  inmateNumber      String?   // nomor register warga binaan
+
+  // === Informasi Pelaku (Visitor Information) ===
+  visitorName       String    // Nama Lengkap
+  visitorNik        String    // NIK / No. KTP
+  tempatLahir       String?   // Tempat Lahir
+  tanggalLahir      String?   // Tanggal Lahir
+  jenisKelamin      String?   // Laki-laki / Perempuan
+  pekerjaan         String?   // Pekerjaan
+  visitorAddress    String?   // Alamat Lengkap
+  visitorPhone      String?   // Nomor Telepon
+  email             String?   // Email
+
+  // === Informasi Berkas (Document Information) ===
+  visitorRelation   String    @default("Keluarga") // Hubungan dengan warga binaan
+  inmateName        String    // Nama Warga Binaan
+  inmateNumber      String?   // No. Registrasi WNI
+  nomorBerkas       String?   // Nomor Berkas
+  jenisBerkas       String?   // Jenis Berkas (dropdown)
+  tanggalBerkas     String?   // Tanggal Berkas
+  jenisPermohonan   String?   // Jenis Permohonan (dropdown)
+  keterangan        String?   // Keterangan (textarea)
+
+  // === Detail Kunjungan ===
   visitDate         String    // tanggal kunjungan
   visitTime         String?   // waktu kunjungan
   serviceId         String
   service           Service   @relation(fields: [serviceId], references: [id])
   visitorCount      Int       @default(1) // jumlah pengunjung
+
+  // === Dokumen Pendukung ===
   documentKtp       Boolean   @default(false)
   documentSurat     Boolean   @default(false)
   documentOther     String?
+  fotoKtp           String?   // Base64 encoded KTP/Identitas photo
+
+  // === Persyaratan ===
+  persetujuanData   Boolean   @default(false) // Menyatakan data benar
+  persetujuanAturan Boolean   @default(false) // Mematuhi peraturan
+  persetujuanKonsekuensi Boolean @default(false) // Mengetahui konsekuensi
+  tandaTangan       String?   // Base64 digital signature
+
+  // === Status & Verification ===
   status            String    @default("menunggu") // menunggu, diverifikasi, ditolak
   verifiedBy        String?
   officer           Officer?  @relation(fields: [verifiedBy], references: [id])

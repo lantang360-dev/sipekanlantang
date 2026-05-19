@@ -37,6 +37,10 @@ export function DashboardPage() {
       setCurrentPage('login-petugas');
       return;
     }
+    if (page === 'display-antrian' && !officer) {
+      setCurrentPage('login-petugas');
+      return;
+    }
     setCurrentPage(page);
   };
 

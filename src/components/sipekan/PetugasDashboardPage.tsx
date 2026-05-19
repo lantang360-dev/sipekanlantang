@@ -2,9 +2,18 @@
 
 import { useSipekanStore, PageType } from '@/store/sipekan-store';
 import { useState, useEffect, useCallback } from 'react';
-import { ArrowLeft, Users, FileText, Clock, CheckCircle, XCircle, Eye, LogOut, Monitor, BarChart3, ClipboardList } from 'lucide-react';
+import { ArrowLeft, Users, FileText, Clock, CheckCircle, XCircle, Eye, LogOut, Monitor, BarChart3, ClipboardList, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
+// Separate component to handle redirect without setting state during render
+function OfficerRedirect() {
+  const { setCurrentPage } = useSipekanStore();
+  useEffect(() => {
+    setCurrentPage('login-petugas');
+  }, [setCurrentPage]);
+  return null;
+}
 
 interface Registration {
   id: string;
@@ -17,6 +26,8 @@ interface Registration {
   visitDate: string;
   visitorCount: number;
   status: string;
+  fotoKtp: string | null;
+  jenisPermohonan: string | null;
   service: { name: string; prefix: string };
   createdAt: string;
 }
@@ -84,8 +95,8 @@ export function PetugasDashboardPage() {
   };
 
   if (!officer) {
-    setCurrentPage('login-petugas');
-    return null;
+    // Use useEffect to avoid setting state during render
+    return <OfficerRedirect />;
   }
 
   const tabs: { id: PetugasTab; label: string; icon: React.ReactNode; desc: string }[] = [
@@ -197,6 +208,17 @@ export function PetugasDashboardPage() {
                     <span className="flex items-center gap-1"><FileText className="w-3 h-3 text-[#0f1d3e]" /> {reg.inmateName}</span>
                     <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-[#0f1d3e]" /> {reg.visitDate}</span>
                     <span>{reg.service?.name}</span>
+                  </div>
+                  {/* KTP Photo indicator */}
+                  <div className="flex items-center gap-2 mt-2 text-[11px]">
+                    {reg.fotoKtp ? (
+                      <span className="flex items-center gap-1 text-green-600 font-medium"><Camera className="w-3 h-3" /> Foto KTP terupload</span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-amber-600"><Camera className="w-3 h-3" /> Belum ada foto KTP</span>
+                    )}
+                    {reg.jenisPermohonan && (
+                      <span className="text-gray-400">• {reg.jenisPermohonan}</span>
+                    )}
                   </div>
                   <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-gray-100 text-[11px] text-gray-400">
                     <span>{new Date(reg.createdAt).toLocaleDateString('id-ID')}</span>

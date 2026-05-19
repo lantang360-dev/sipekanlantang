@@ -172,9 +172,6 @@ export function AntrianPage() {
                 </Button>
               )
             )}
-            <Button variant="outline" onClick={() => setCurrentPage('display-antrian')} className="flex items-center gap-2">
-              <Volume2 className="w-4 h-4" /> Display Antrian
-            </Button>
             <Button variant="outline" onClick={() => setCurrentPage('status-antrian')} className="flex items-center gap-2">
               <Search className="w-4 h-4" /> Cek Status
             </Button>

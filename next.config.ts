@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  allowedDevOrigins: [
+    'space-z.ai',
+    '.space-z.ai',
+    '.z.ai',
+  ],
 };
 
 export default nextConfig;
