@@ -169,7 +169,44 @@ docker run -d -p 3000:3000 --env-file .env --name sipekan sipekan-v4.8
 
 ---
 
+## ⚠️ PENTING: SQLite vs PostgreSQL
+
+SIPEKAN v4.8 menggunakan **PostgreSQL** sebagai database.
+
+**Jika Anda mendapat error:**
+```
+Error: the URL must start with the protocol `file:`.
+```
+**Artinya:** Prisma schema masih menggunakan `provider = "sqlite"` tapi `.env` Anda berisi URL PostgreSQL.
+
+**Solusi:** Pastikan `prisma/schema.prisma` menggunakan PostgreSQL:
+```prisma
+datasource db {
+  provider = "postgresql"   // ← BUKAN "sqlite"
+  url      = env("DATABASE_URL")
+}
+```
+
+Dan pastikan `.env` menggunakan URL PostgreSQL:
+```env
+# ✅ BENAR - PostgreSQL
+DATABASE_URL="postgresql://username:password@host:5432/database?sslmode=require"
+
+# ❌ SALAH - SQLite (tidak didukung di v4.8)
+# DATABASE_URL="file:./dev.db"
+```
+
+---
+
 ## Troubleshooting
+
+### Error: the URL must start with the protocol `file:`
+- **Penyebab:** Schema Prisma masih `sqlite` tapi `.env` berisi URL `postgresql://`
+- **Solusi:** Ubah `provider = "sqlite"` menjadi `provider = "postgresql"` di `prisma/schema.prisma`
+
+### Error: P1012 - Schema validation
+- Pastikan `DATABASE_URL` di `.env` dimulai dengan `postgresql://`
+- Pastikan `provider` di schema adalah `"postgresql"`
 
 ### Error: Database connection failed
 - Pastikan `DATABASE_URL` benar di file `.env`
@@ -184,8 +221,6 @@ npx prisma generate
 ### Error: Port 3000 sudah digunakan
 ```bash
 # Ganti port
-PORT=3001 bun run dev
-# atau
 PORT=3001 npm run dev
 ```
 

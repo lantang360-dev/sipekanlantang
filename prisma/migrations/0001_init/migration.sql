@@ -6,7 +6,7 @@ CREATE TABLE "Officer" (
     "name" TEXT NOT NULL,
     "role" TEXT NOT NULL DEFAULT 'petugas',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Officer_pkey" PRIMARY KEY ("id")
 );
@@ -21,7 +21,7 @@ CREATE TABLE "Service" (
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "order" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Service_pkey" PRIMARY KEY ("id")
 );
@@ -35,7 +35,7 @@ CREATE TABLE "Counter" (
     "currentNum" TEXT NOT NULL DEFAULT '',
     "order" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Counter_pkey" PRIMARY KEY ("id")
 );
@@ -55,7 +55,7 @@ CREATE TABLE "Queue" (
     "servedAt" TIMESTAMP(3),
     "completedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Queue_pkey" PRIMARY KEY ("id")
 );
@@ -66,11 +66,21 @@ CREATE TABLE "Registration" (
     "code" TEXT NOT NULL,
     "visitorName" TEXT NOT NULL,
     "visitorNik" TEXT NOT NULL,
-    "visitorPhone" TEXT,
+    "tempatLahir" TEXT,
+    "tanggalLahir" TEXT,
+    "jenisKelamin" TEXT,
+    "pekerjaan" TEXT,
     "visitorAddress" TEXT,
-    "visitorRelation" TEXT NOT NULL,
+    "visitorPhone" TEXT,
+    "email" TEXT,
+    "visitorRelation" TEXT NOT NULL DEFAULT 'Keluarga',
     "inmateName" TEXT NOT NULL,
     "inmateNumber" TEXT,
+    "nomorBerkas" TEXT,
+    "jenisBerkas" TEXT,
+    "tanggalBerkas" TEXT,
+    "jenisPermohonan" TEXT,
+    "keterangan" TEXT,
     "visitDate" TEXT NOT NULL,
     "visitTime" TEXT,
     "serviceId" TEXT NOT NULL,
@@ -78,12 +88,17 @@ CREATE TABLE "Registration" (
     "documentKtp" BOOLEAN NOT NULL DEFAULT false,
     "documentSurat" BOOLEAN NOT NULL DEFAULT false,
     "documentOther" TEXT,
+    "fotoKtp" TEXT,
+    "persetujuanData" BOOLEAN NOT NULL DEFAULT false,
+    "persetujuanAturan" BOOLEAN NOT NULL DEFAULT false,
+    "persetujuanKonsekuensi" BOOLEAN NOT NULL DEFAULT false,
+    "tandaTangan" TEXT,
     "status" TEXT NOT NULL DEFAULT 'menunggu',
     "verifiedBy" TEXT,
     "verifyNote" TEXT,
     "queueId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Registration_pkey" PRIMARY KEY ("id")
 );
@@ -93,6 +108,8 @@ CREATE TABLE "Setting" (
     "id" TEXT NOT NULL,
     "key" TEXT NOT NULL,
     "value" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Setting_pkey" PRIMARY KEY ("id")
 );
@@ -106,6 +123,7 @@ CREATE TABLE "MediaItem" (
     "order" INTEGER NOT NULL DEFAULT 0,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "MediaItem_pkey" PRIMARY KEY ("id")
 );

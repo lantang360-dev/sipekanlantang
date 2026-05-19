@@ -1,18 +1,23 @@
 # dependencies
-node_modules/
-.pnp
+/node_modules
+/.pnp
 .pnp.js
+.yarn/install-state.gz
+
+# testing
+/coverage
 
 # next.js
-.next/
-out/
+/.next/
+/out/
 
 # production
-build/
+/build
 
 # misc
 .DS_Store
 *.pem
+Thumbs.db
 
 # debug
 npm-debug.log*
@@ -22,6 +27,7 @@ yarn-error.log*
 # local env files
 .env
 .env*.local
+.env.production
 
 # vercel
 .vercel
@@ -31,8 +37,16 @@ yarn-error.log*
 next-env.d.ts
 
 # prisma
-*.db
-*.db-journal
+prisma/*.db
+prisma/*.db-journal
+db/*.db
+db/*.db-journal
 
-# database
-db/
+# uploads
+/uploads
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
