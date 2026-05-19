@@ -30,7 +30,6 @@ const JENIS_BERKAS_OPTIONS = [
 const JENIS_PERMOHONAN_OPTIONS = [
   'Besukan Keluarga',
   'Besukan Anak',
-  'Besukan Khusus',
   'Kunjungan Advokat',
   'Kunjungan Konsuler',
   'Lainnya',

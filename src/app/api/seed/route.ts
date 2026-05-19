@@ -49,7 +49,6 @@ export async function GET(request: Request) {
     const services = await Promise.all([
       db.service.upsert({ where: { prefix: 'B' }, update: {}, create: { name: 'Besukan Tatap Muka', prefix: 'B', description: 'Layanan kunjungan tatap muka dengan warga binaan', estimatedMin: 30, order: 1 } }),
       db.service.upsert({ where: { prefix: 'P' }, update: {}, create: { name: 'Penitipan Barang', prefix: 'P', description: 'Layanan penitipan barang untuk warga binaan', estimatedMin: 15, order: 2 } }),
-      db.service.upsert({ where: { prefix: 'A' }, update: {}, create: { name: 'Layanan Umum', prefix: 'A', description: 'Layanan administrasi dan informasi umum', estimatedMin: 10, order: 3 } }),
     ]);
 
     // Seed counters — exactly 3 loket
