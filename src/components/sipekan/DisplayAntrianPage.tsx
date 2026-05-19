@@ -97,10 +97,13 @@ export function DisplayAntrianPage() {
   const [manualNumbers, setManualNumbers] = useState<Record<string, string>>({});
   const [showManualInput, setShowManualInput] = useState<string | null>(null);
   const [callFeedback, setCallFeedback] = useState<CallFeedback | null>(null);
+  const [videoMuted, setVideoMuted] = useState(true);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const speechInitializedRef = useRef(false);
   const prevCalledRef = useRef<string | null>(null);
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const ytPlayerRef = useRef<HTMLIFrameElement | null>(null);
 
   // Initialize speech synthesis on first user interaction
   useEffect(() => {
@@ -142,9 +145,26 @@ export function DisplayAntrianPage() {
     }
   }, []);
 
-  // Play chime + speak queue number
+  // Toggle video sound
+  const toggleVideoSound = useCallback(() => {
+    setVideoMuted(prev => {
+      const newMuted = !prev;
+      // Update HTML5 video element directly
+      if (videoRef.current) {
+        videoRef.current.muted = newMuted;
+      }
+      return newMuted;
+    });
+  }, []);
+
+  // Play chime + speak queue number (temporarily mutes video)
   const announceQueue = useCallback((number: string, counterName: string) => {
     if (!soundOn) return;
+
+    // Temporarily mute video during announcement
+    const wasVideoMuted = videoMuted;
+    setVideoMuted(true);
+    if (videoRef.current) videoRef.current.muted = true;
 
     // Play chime sound
     audioCtxRef.current = playChimeSound(audioCtxRef.current) || audioCtxRef.current;
@@ -171,12 +191,40 @@ export function DisplayAntrianPage() {
         const idVoice = voices.find(v => v.lang.startsWith('id'));
         if (idVoice) utterance.voice = idVoice;
 
+        utterance.onend = () => {
+          // Restore video sound after announcement finishes
+          if (!wasVideoMuted) {
+            setVideoMuted(false);
+            if (videoRef.current) videoRef.current.muted = false;
+          }
+        };
+        utterance.onerror = () => {
+          // Restore video sound on error too
+          if (!wasVideoMuted) {
+            setVideoMuted(false);
+            if (videoRef.current) videoRef.current.muted = false;
+          }
+        };
+
         window.speechSynthesis.speak(utterance);
+
+        // Fallback: restore video sound after 10 seconds max
+        setTimeout(() => {
+          if (!wasVideoMuted) {
+            setVideoMuted(false);
+            if (videoRef.current) videoRef.current.muted = false;
+          }
+        }, 10000);
       } catch (e) {
         console.error('Speech error:', e);
+        // Restore video sound on error
+        if (!wasVideoMuted) {
+          setVideoMuted(false);
+          if (videoRef.current) videoRef.current.muted = false;
+        }
       }
     }, 1200);
-  }, [soundOn]);
+  }, [soundOn, videoMuted]);
 
   // Poll display data
   const fetchData = useCallback(async () => {
@@ -480,6 +528,11 @@ export function DisplayAntrianPage() {
           <div className="flex items-center justify-between px-4 py-1.5 bg-black/60 border-b border-white/5 shrink-0">
             <span className="text-[10px] font-semibold text-white/40 tracking-widest uppercase">Informasi Video</span>
             <div className="flex gap-1.5">
+              <button onClick={toggleVideoSound}
+                className={`w-7 h-7 rounded-md border flex items-center justify-center transition ${videoMuted ? 'border-white/8 bg-white/5 text-white/50 hover:text-amber-400' : 'border-amber-400/30 bg-amber-400/10 text-amber-400'}`}
+                title={videoMuted ? 'Nyalakan Suara Video' : 'Matikan Suara Video'}>
+                {videoMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+              </button>
               <button onClick={() => setCurrentMediaIdx(Math.max(0, currentMediaIdx - 1))} className="w-7 h-7 rounded-md border border-white/8 bg-white/5 flex items-center justify-center text-white/50 hover:text-amber-400 transition">
                 <RefreshCw className="w-3.5 h-3.5" />
               </button>
@@ -492,22 +545,26 @@ export function DisplayAntrianPage() {
             {mediaItems.length > 0 && mediaItems[currentMediaIdx] ? (
               mediaItems[currentMediaIdx].type === 'youtube' ? (
                 <iframe
-                  src={`https://www.youtube.com/embed/${mediaItems[currentMediaIdx].mediaId}?autoplay=1&mute=1&loop=1&controls=0`}
+                  key={`yt-${mediaItems[currentMediaIdx].id}-${videoMuted}`}
+                  ref={ytPlayerRef}
+                  src={`https://www.youtube.com/embed/${mediaItems[currentMediaIdx].mediaId}?autoplay=1&mute=${videoMuted ? 1 : 0}&loop=1&controls=0&playlist=${mediaItems[currentMediaIdx].mediaId}`}
                   className="absolute inset-0 w-full h-full"
                   allow="autoplay; encrypted-media"
                 />
               ) : mediaItems[currentMediaIdx].type === 'gdrive' ? (
                 <iframe
+                  key={`gd-${mediaItems[currentMediaIdx].id}-${videoMuted}`}
                   src={`https://drive.google.com/file/d/${mediaItems[currentMediaIdx].mediaId}/preview`}
                   className="absolute inset-0 w-full h-full"
                   allow="autoplay"
                 />
               ) : mediaItems[currentMediaIdx].type === 'url' ? (
                 <video
+                  ref={videoRef}
                   src={mediaItems[currentMediaIdx].mediaId}
                   className="absolute inset-0 w-full h-full object-contain"
                   autoPlay
-                  muted
+                  muted={videoMuted}
                   loop
                   controls={false}
                 />
