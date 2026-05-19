@@ -19,14 +19,6 @@ interface Service {
   prefix: string;
 }
 
-const JENIS_BERKAS_OPTIONS = [
-  'Perkara Pidana',
-  'Perkara Anak',
-  'Hak Asasi Manusia',
-  'Pemasyarakatan',
-  'Lainnya',
-];
-
 const JENIS_PERMOHONAN_OPTIONS = [
   'Besukan Keluarga',
   'Besukan Anak',
@@ -44,6 +36,13 @@ const HUBUNGAN_OPTIONS = [
   'Advokat',
   'Lainnya',
 ];
+
+// Minimum visit date = tomorrow (must register at least 1 day before visit)
+function getMinVisitDate(): string {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow.toISOString().split('T')[0];
+}
 
 export function PendaftaranPage() {
   const { setCurrentPage } = useSipekanStore();
@@ -71,10 +70,6 @@ export function PendaftaranPage() {
     // Informasi Kunjungan
     visitorRelation: 'Keluarga',
     inmateName: '',
-    inmateNumber: '',
-    nomorBerkas: '',
-    jenisBerkas: '',
-    tanggalBerkas: '',
     jenisPermohonan: '',
     keterangan: '',
     // Detail Kunjungan
@@ -389,10 +384,6 @@ export function PendaftaranPage() {
                 <Input required value={form.inmateName} onChange={e => setForm({...form, inmateName: e.target.value})} placeholder="Nama warga binaan" className="mt-1" />
               </div>
               <div>
-                <Label className="text-xs font-semibold">No. Registrasi WNI</Label>
-                <Input value={form.inmateNumber} onChange={e => setForm({...form, inmateNumber: e.target.value})} placeholder="Nomor registrasi" className="mt-1" />
-              </div>
-              <div>
                 <Label className="text-xs font-semibold">Hubungan <span className="text-red-500">*</span></Label>
                 <Select value={form.visitorRelation} onValueChange={v => setForm({...form, visitorRelation: v})}>
                   <SelectTrigger className="mt-1"><SelectValue placeholder="Pilih Hubungan" /></SelectTrigger>
@@ -411,23 +402,6 @@ export function PendaftaranPage() {
                 </Select>
               </div>
               <div>
-                <Label className="text-xs font-semibold">Jenis Berkas</Label>
-                <Select value={form.jenisBerkas} onValueChange={v => setForm({...form, jenisBerkas: v})}>
-                  <SelectTrigger className="mt-1"><SelectValue placeholder="Pilih jenis berkas" /></SelectTrigger>
-                  <SelectContent>
-                    {JENIS_BERKAS_OPTIONS.map(j => <SelectItem key={j} value={j}>{j}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-xs font-semibold">Nomor Berkas</Label>
-                <Input value={form.nomorBerkas} onChange={e => setForm({...form, nomorBerkas: e.target.value})} placeholder="Nomor berkas perkara" className="mt-1" />
-              </div>
-              <div>
-                <Label className="text-xs font-semibold">Tanggal Berkas</Label>
-                <Input type="date" value={form.tanggalBerkas} onChange={e => setForm({...form, tanggalBerkas: e.target.value})} className="mt-1" />
-              </div>
-              <div>
                 <Label className="text-xs font-semibold">Layanan <span className="text-red-500">*</span></Label>
                 <Select required value={form.serviceId} onValueChange={v => setForm({...form, serviceId: v})}>
                   <SelectTrigger className="mt-1"><SelectValue placeholder="Pilih layanan" /></SelectTrigger>
@@ -440,7 +414,8 @@ export function PendaftaranPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
               <div>
                 <Label className="text-xs font-semibold">Tanggal Kunjungan <span className="text-red-500">*</span></Label>
-                <Input required type="date" value={form.visitDate} onChange={e => setForm({...form, visitDate: e.target.value})} className="mt-1" />
+                <Input required type="date" min={getMinVisitDate()} value={form.visitDate} onChange={e => setForm({...form, visitDate: e.target.value})} className="mt-1" />
+                <p className="text-xs text-amber-600 mt-1">Pendaftaran harus minimal 1 hari sebelum tanggal kunjungan</p>
               </div>
               <div>
                 <Label className="text-xs font-semibold">Jumlah Pengunjung</Label>
